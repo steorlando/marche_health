@@ -13,10 +13,10 @@ prova_shape <- sf::read_sf(
 )
 
 
-Aggiungo le province
+#Aggiungo le province
 
 # con i confini delle province 
-tm_shape(marche_comuni_pop) + # il database con i dati
+tm_shape(marche_comuni_mappa) + # il database con i dati
   tm_polygons("popolazione", # il dato da mappare (potrei fare una funzione)
               style = "cont", # non so cosa è?
               palette = "Blues", # la scala di colori
@@ -32,11 +32,11 @@ library(sf)
 # italy_province <- ...
 
 # Mappa con i confini delle province aggiunti
-tm_shape(marche_comuni_pop) +
+tm_shape(marche_comuni_mappa) +
   tm_polygons("perc_lim",
               style = "jenks",
               palette = "Blues",
               title = "Comuni per popolazione") +
   tm_shape(italy_province) + # Aggiungi i confini delle province
-  tm_borders(lwd = 1.5, col = "red", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_borders(lwd = 1.5, col = "red", alpha = 1) + # personalizza lo spessore, il colore e la trasparenza dei confini
   tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)

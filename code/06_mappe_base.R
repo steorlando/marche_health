@@ -23,7 +23,7 @@ italy_province <- sf::read_sf(
 
 # funzione per la mappa che mi serve
 creo_mappa <- function(dato, titolo) {
-  tm_shape(marche_comuni_pop) + # il database con i dati
+  tm_shape(marche_comuni_mappa) + # il database con i dati
     tm_polygons(dato, # il dato da mappare (potrei fare una funzione)
                 style = "pretty", # capire quale sia lo stile migliore
                 palette = "Blues", # la scala di colori

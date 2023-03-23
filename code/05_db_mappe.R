@@ -1,4 +1,4 @@
-# Parametri 
+# Parametri di base 
 lim_eta <- 65
 lim_eta2 <- 80
 
@@ -23,7 +23,11 @@ comuni_map <- comuni_map %>%
   mutate(perc_lim = pop_lim/popolazione,
          perc_lim2 = pop_lim2/popolazione)
 
+
+
+
+
 # DB per la mappa
-marche_comuni_pop <- left_join(italy_comuni, comuni_map, by = "cod_istat")
+marche_comuni_mappa <- left_join(italy_comuni, comuni_map, by = "cod_istat")
 
 

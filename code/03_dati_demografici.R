@@ -17,6 +17,7 @@ residenti_eta1 <- residenti_eta %>%
   filter(!grepl("IT", itter107)) %>% 
   filter(statciv2 == "99")
 
+# Elenco dei comuni delle marche 
 comuni <- residenti_eta1 %>% 
   group_by(itter107) %>% 
   summarise(nome = first(territorio))
