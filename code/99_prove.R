@@ -40,3 +40,5 @@ tm_shape(marche_comuni_mappa) +
   tm_shape(italy_province) + # Aggiungi i confini delle province
   tm_borders(lwd = 1.5, col = "red", alpha = 1) + # personalizza lo spessore, il colore e la trasparenza dei confini
   tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+
+sum(comuni_map$pop_lim)

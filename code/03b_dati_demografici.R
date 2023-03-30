@@ -1,6 +1,7 @@
 # questi i residenti per comune per età solo delle marche
-residenti_eta_or <- import("data/socio-demo/pop_eta_marche_2020.csv") %>%  clean_names()
+residenti_eta_or <- import("data/socio-demo/pop_eta_marche_2020.csv") %>%  clean_names() # caricati dati istat demografici
 
+# Pulizia e selezione dati demografici istat
 residenti_eta <- residenti_eta_or %>% 
   filter(!grepl("IT", itter107)) %>% # tolgo i dati generali
   filter(statciv2 == "99") %>% # includo tutti gli stati civili

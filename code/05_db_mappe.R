@@ -1,6 +1,7 @@
 # Parametri di base 
 lim_eta <- 65
 lim_eta2 <- 80
+lim_giovani <- 14
 
 # Popolazione over limite basso
 dato <- residenti_eta %>% 
@@ -23,11 +24,10 @@ comuni_map <- comuni_map %>%
   mutate(perc_lim = pop_lim/popolazione,
          perc_lim2 = pop_lim2/popolazione)
 
+# Aggiungere altri dati per ciascun comune
 
 
-
-
-# DB per la mappa
+# DB per la mappa in cui unisco i dati per ciascun comune con i confini dei comuni
 marche_comuni_mappa <- left_join(italy_comuni, comuni_map, by = "cod_istat")
 
 
