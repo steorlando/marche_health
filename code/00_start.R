@@ -16,7 +16,8 @@ pacman::p_load(magrittr,      # Pipes
                knitr,
                sjmisc,
                sf,             # per importare dati geospaziali
-               tmap           # per generare mappe
+               tmap,           # per generare mappe
+               skimr           
                )           
 
 rm(list = ls())
