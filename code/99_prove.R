@@ -42,3 +42,5 @@ tm_shape(marche_comuni_mappa) +
   tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
 
 sum(comuni_map$pop_lim)
+
+#PROVA MG1
