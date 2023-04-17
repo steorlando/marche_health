@@ -24,8 +24,10 @@ comuni_map <- comuni_map %>%
   mutate(perc_65 = over65/popolazione,
          perc_80 = over80/popolazione)
 
-#Percentuale over (sia 65 che 80) su totale popolazione over65 e over80 di tutta la regione
- 
+#Percentuale over su totale popolazione degli anziani tutta la regione
+tot_over65 <- sum(comuni_map$over65)
+
+comuni_map$perc_over65 <- comuni_map$over65/tot_over65
 
 #Popolazione under 
 dato <- residenti_eta %>% 
