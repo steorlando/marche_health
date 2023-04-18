@@ -45,6 +45,19 @@ comuni_map$indice_inv <- comuni_map$perc_65/comuni_map$perc_giovani
 
 # Aggiungere altri dati per ciascun comune
 
+# ADI
+adi<- import("data/socio-demo/DB_D02_Ass_Domic_Integ_ServSan_bis.xlsx") %>% 
+  clean_names() %>% 
+  select(pro_com_a,
+         presenza,
+         utenti,
+         spesa_tot,
+         spesa_utenti,
+         spesa_ssn,
+         spesanetta)
+
+names(adi)
+
 
 # DB per la mappa in cui unisco i dati per ciascun comune con i confini dei comuni
 marche_comuni_mappa <- left_join(italy_comuni, comuni_map, by = "cod_istat")
