@@ -27,7 +27,7 @@ comuni_map <- comuni_map %>%
 #Percentuale over su totale popolazione degli anziani tutta la regione
 tot_over65 <- sum(comuni_map$over65)
 
-comuni_map$perc_over65 <- comuni_map$over65/tot_over65
+comuni_map$prop_over65 <- comuni_map$over65/tot_over65
 
 #Popolazione under 
 dato <- residenti_eta %>% 
@@ -45,19 +45,46 @@ comuni_map$indice_inv <- comuni_map$perc_65/comuni_map$perc_giovani
 
 # Aggiungere altri dati per ciascun comune
 
-# ADI
-adi<- import("data/socio-demo/DB_D02_Ass_Domic_Integ_ServSan_bis.xlsx") %>% 
+# ADI, SAD, RSA
+
+adi <- import("data/socio-demo/DB_D02_Ass_Domic_Integ_ServSan_bis.xlsx") %>% 
   clean_names() %>% 
-  select(pro_com_a,
+  select(cod_istat = pro_com_a,
          presenza,
          utenti,
          spesa_tot,
          spesa_utenti,
          spesa_ssn,
-         spesanetta)
+         spesanetta) %>% 
+  rename_with(~ ifelse(. == "cod_istat", ., paste0("adi_", .)), everything())
 
-names(adi)
+sad <- import("data/socio-demo/DB_D01_Ass_Domic_Socio_Assist_bis.xlsx") %>% 
+  clean_names() %>% 
+  select(cod_istat = pro_com_a,
+         presenza,
+         utenti,
+         spesa_tot,
+         spesa_utenti,
+         spesa_ssn,
+         spesanetta) %>% 
+  rename_with(~ ifelse(. == "cod_istat", ., paste0("sad_", .)), everything())
 
+rsa <- import("data/socio-demo/DB_H01_Strutture_Residenziali_bis.xlsx") %>% 
+  clean_names() %>% 
+  mutate(cod_istat = substr(pro_com, start = 4, stop = 9)) %>% 
+  select(cod_istat,
+         presenza,
+         utenti,
+         spesa_tot,
+         spesa_utenti,
+         spesa_ssn,
+         spesanetta) %>% 
+  rename_with(~ ifelse(. == "cod_istat", ., paste0("rsa_", .)), everything())
+
+
+comuni_map <- left_join(comuni_map, adi)
+comuni_map <- left_join(comuni_map, sad)
+comuni_map <- left_join(comuni_map, rsa)
 
 # DB per la mappa in cui unisco i dati per ciascun comune con i confini dei comuni
 marche_comuni_mappa <- left_join(italy_comuni, comuni_map, by = "cod_istat")

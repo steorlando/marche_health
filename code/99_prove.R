@@ -44,3 +44,34 @@ tm_shape(marche_comuni_mappa) +
 sum(comuni_map$pop_lim)
 
 #PROVA MG3
+
+#Comuni marche con rsa
+
+rsa_n <- sum(comuni_map$rsa_presenza)
+
+anziani_rsa <- comuni_map %>% 
+  filter(rsa_presenza == 1)
+anziani_rsa <- sum(anziani_rsa$over65)
+
+anziani_rsa / tot_over65
+
+sad_n <- sum(comuni_map$sad_presenza)
+
+anziani_sad <- comuni_map %>% 
+  filter(sad_presenza == 1)
+anziani_sad <- sum(anziani_sad$over65)
+
+anziani_sad / tot_over65
+
+rsa_n <- sum(comuni_map$rsa_presenza)
+
+anziani_rsa <- comuni_map %>% 
+  filter(rsa_presenza == 1)
+anziani_rsa <- sum(anziani_rsa$over65)
+
+anziani_rsa / tot_over65
+
+anziani_comuni <- comuni_map %>% 
+  filter(popolazione < 1000)
+
+hist(anziani_comuni$over65)
