@@ -40,8 +40,7 @@ L'analisi dei dati demografici si è concentrata soprattuto sulla distribuzione 
 
 ### Distribuzione anziani con più di 65 anni nei comuni
 
-Questa prima mappa ci mostra i comuni dove, per l'alto numero di anziani, è utile implementare servizi di medicina territoriale. 
-Chiaramente il numero assoluto di anziani dipende dalla popolosità del comune.
+Questa prima mappa ci mostra i comuni dove, per l'alto numero di anziani, è utile implementare servizi di medicina territoriale. Chiaramente il numero assoluto di anziani dipende dalla popolosità del comune.
 
 ```{r mappa_anziani, fig.cap= "Anziani con più 65 anni in tutti i comuni"}
 db_map <- db
@@ -62,7 +61,7 @@ tm_shape(db_map) + # il database con i dati
 
 ```
 
-### Percentuale di anziani con più di 65 anni per comune (solo comuni con più di 3000 abitanti) con servizi territoriali
+### Percentuale di anziani con più di 65 anni per comune (solo comuni con più di 2000 abitanti) con servizi territoriali
 
 In questa seconda mappa è rappresentata la percentuale di anziani sulla popolazione totale. I comuni più scuri pertanto sono quelli dove gli anziani hanno un peso maggiore sulla popolazione. In questi comuni sono necessari servizi territoriali, sia sanitari che assistenziali.
 
