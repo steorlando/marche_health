@@ -1,0 +1,103 @@
+---
+title: "Work in progress"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+load("my_work_space.RData")
+library(tidyverse)
+library(magrittr)
+library(officer)
+library(flextable)
+library(ggplot2)
+library(scales)
+library(janitor)
+library(here)
+library(lubridate)
+library(tmap)
+library(tmaptools)
+
+set_flextable_defaults(font.size = 10,
+                       table.layout = "autofit",
+                       theme_fun = "theme_booktabs",
+                       padding = 0)
+
+std_border <- fp_border(color = "grey", style = "solid", width = 1 )
+
+```
+
+# Analisi dati - work in progress
+
+## Dati demografici
+
+L'analisi dei dati demografici si è concentrata soprattuto sulla distribuzione della popolazione anziana nei comuni delle Marche. Le informazioni si basano sui dati pubblicati da ISTAT e relativi all'anno 2020. Le mappe seguenti mostrano la distribuzione della popolazione con più di 65 anni sul territorio delle marche.
+
+### Distribuzione anziani con più di 65 anni nei comuni
+
+Questa prima mappa ci mostra i comuni dove, per l'alto numero di anziani, è utile implementare servizi di medicina territoriale. 
+Chiaramente il numero assoluto di anziani dipende dalla popolosità del comune.
+
+```{r mappa_anziani, fig.cap= "Anziani con più 65 anni in tutti i comuni"}
+db_map <- db
+
+tmap_mode("view")
+tm_shape(db_map) + # il database con i dati
+  tm_polygons("over65", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Popolazione > 65 anni",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+
+```
+
+### Percentuale di anziani con più di 65 anni per comune (solo comuni con più di 3000 abitanti) con servizi territoriali
+
+In questa seconda mappa è rappresentata la percentuale di anziani sulla popolazione totale. I comuni più scuri pertanto sono quelli dove gli anziani hanno un peso maggiore sulla popolazione. In questi comuni sono necessari servizi territoriali, sia sanitari che assistenziali.
+
+Nella mappa sono inclusi solo i comuni con una popolazione totale di più di 2.000 abitanti, in modo da escludere quei comuni che, pur avendo una popolazione molto anziana, non hanno un numero assoluto rilevante.
+
+E' interessante notare come molti comuni abbiano una percentuale di anziani maggiore del 20%, con picchi del 45% (Arcevia)
+
+Le bubbles rosse mostrano gli unici due comuni con dei cittadini inseriti in una servizio di Assistenza domiciliare integrata **sanitaria** (Pesaro e Civitanova Marche).
+
+Le bubbles arancioni mostrano i comuni con dei cittadini inseriti in una servizio di Assistenza domiciliare **sociale**.
+
+Cliccando sui comuni è possibile vedere il numero di anziani, la percentuale sulla popolazione, e il numero di utenti inclusi nei due servizi.
+
+```{r mappa_anziani2}
+db_map <- db %>% 
+  filter(popolazione > 2000)
+
+tmap_mode("view")
+tm_shape(db_map) + # il database con i dati
+  tm_polygons("perc_65", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Percentuale > 65 anni su popolazione",
+              border.lwd = 0.5,
+              popup.vars = c("% anziani > 65 " = "prop65_map",
+                             "Pop totale" = "popolazione", 
+                             "Pop > di 65" = "over65",
+                             "Utenti ADI" = "adi_utenti",
+                             "Utenti SAD" = "sad_utenti"
+              )) +
+  tm_shape(db_map) +
+    tm_bubbles("adi_presenza", col = "red" , size = "adi_utenti", scale = 1.5, alpha = 0.5) +
+  tm_shape(db_map) +
+    tm_bubbles("sad_presenza", col = "orange" , size = "sad_utenti", scale = 1.5, alpha = 0.5) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+```
