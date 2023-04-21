@@ -75,3 +75,51 @@ anziani_comuni <- comuni_map %>%
   filter(popolazione < 1000)
 
 hist(anziani_comuni$over65)
+
+names(db)
+db1 <- db %>% relocate(territorio, .before = cod_istat) %>% 
+  var_labels(territorio         = "Sex",
+             over65             = "Pop over 65")
+
+db_map <- db
+
+tmap_mode("view")
+tm_shape(db_map) + # il database con i dati
+  tm_polygons("over65", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Popolazione > 65 anni",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+
+names(db)
+
+db_map <- db %>% 
+  filter(popolazione > 2000)
+
+tmap_mode("view")
+tm_shape(db_map) + # il database con i dati
+  tm_polygons("perc_65", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Percentuale > 65 anni su popolazione",
+              border.lwd = 0.5,
+              popup.vars = c("% anziani > 65 " = "prop65_map",
+                             "Pop totale" = "popolazione", 
+                             "Pop > di 65" = "over65",
+                             "Utenti ADI" = "adi_utenti",
+                             "Utenti SAD" = "sad_utenti"
+              )) +
+  tm_shape(db_map) +
+    tm_bubbles("adi_presenza", col = "red" , size = "adi_utenti", scale = 1.5, alpha = 0.5) +
+  tm_shape(db_map) +
+    tm_bubbles("sad_presenza", col = "orange" , size = "sad_utenti", scale = 1.5, alpha = 0.5) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+
