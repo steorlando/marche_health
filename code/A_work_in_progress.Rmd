@@ -22,6 +22,7 @@ library(here)
 library(lubridate)
 library(tmap)
 library(tmaptools)
+library(scales)
 
 set_flextable_defaults(font.size = 10,
                        table.layout = "autofit",
@@ -61,7 +62,9 @@ tm_shape(db_map) + # il database con i dati
 
 ```
 
-### Percentuale di anziani con più di 65 anni per comune (solo comuni con più di 2000 abitanti) con servizi territoriali
+### Percentuale di anziani per comune (solo comuni con più di 2000 abitanti) con servizi territoriali
+
+#### Anziani over 65
 
 In questa seconda mappa è rappresentata la percentuale di anziani sulla popolazione totale. I comuni più scuri pertanto sono quelli dove gli anziani hanno un peso maggiore sulla popolazione. In questi comuni sono necessari servizi territoriali, sia sanitari che assistenziali.
 
@@ -99,4 +102,91 @@ tm_shape(db_map) + # il database con i dati
   tm_shape(italy_province) + # Aggiungi i confini delle province
   tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
   tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+```
+
+#### Anziani over 80
+
+Questa seconda mappa è simile alla precedente, ma considera la percentuale di anziani sopra gli 80 anni.
+
+```{r mappa_anziani_80}
+db_map <- db %>% 
+  filter(popolazione > 2000)
+
+tmap_mode("view")
+tm_shape(db_map) + # il database con i dati
+  tm_polygons("perc_80", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Percentuale > 80 anni su popolazione",
+              border.lwd = 0.5,
+              popup.vars = c("% anziani > 80 " = "prop80_map",
+                             "Pop totale" = "popolazione", 
+                             "Pop > di 80" = "over80",
+                             "Utenti ADI" = "adi_utenti",
+                             "Utenti SAD" = "sad_utenti"
+              )) +
+  tm_shape(db_map) +
+    tm_bubbles("adi_presenza", col = "red" , size = "adi_utenti", scale = 1.5, alpha = 0.5) +
+  tm_shape(db_map) +
+    tm_bubbles("sad_presenza", col = "orange" , size = "sad_utenti", scale = 1.5, alpha = 0.5) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+```
+
+#### Prime considerazioni
+
+Un grande bisogno di salute
+
+-   Nelle marche, nel 2020, c'erano `r format(tot_over65, big.mark = ".")` persone con più di 65 anni pari al `r percent(tot_perc65, accuracy = 0.1)` della popolazione. Si tratta di una popolazione che esprime una forte domanda di salute, in particolare per le patologie croniche non trasmissibili, per le quali è costo-efficace la prevenzione e la cura con servizi territoriali
+
+-   In particolare, tra i `r nrow(db)` comuni delle marche `r n_com_2000_65` hanno più di 2.000 residenti over 65, e `r n_com_25_65` comuni hanno più di un residente su 45 over 65
+
+Una scarsa offerta di servizi territoriali
+
+-   Tra tutti i comuni marchigiani, solo due, Pesaro e Civitanova Marche, hanno attivato il servizio di Assistenza Domiciliare Integrata per un totale di `r sum(db$adi_utenti)` anziani che ricevono questo servizio.
+
+-   I comuni che hanno attivato il servizio SAD sono `r n_com_sad` e gli utenti inseriti in questo servizio in tutta la regione sono `r sum(db$sad_utenti)`, pari al `r percent(utenti_sad/tot_over80, accuracy = 0.1)` degli anziani con più 80 anni.
+
+## Spesa per servizi territoriali
+
+In totale nel 2022 i servizi territoriali (ADI, SAD e RSA) hanno avuto un costo di `r``format(spesa_terr, big.mark = ".")` € e hanno servito `r format(utenti_terr, big.mark = ".")` cittadini con un costo medio ad utente di `r format(round(spesa_terr/utenti_terr), big.mark = ".")` €.
+
+Le due mappe seguenti mostrano la spesa per utente inserito nei servizi territoriali e la spesa divisa sul numero di cittadini over 65.
+
+```{r spesa_territoriale}
+db_map <- db
+tmap_mode("view")
+
+# Map 1: Spesa per utente servizi territoriali
+map1 <- tm_shape(db_map) +
+  tm_polygons("spesa_utente",
+              style = "pretty",
+              palette = "Blues",
+              title = "Spesa per utente servizi territoriali",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65",
+                             "Utenti" = "utenti_tot",
+                             "Spesa servizi" = "spesa_tot")) +
+  tm_shape(italy_province) +
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) +
+  tm_layout(main.title = "Comuni della regione Marche - Map 1", main.title.size = 1.5)
+
+# Map 2: Spesa per cittadini over 65
+map2 <- tm_shape(db_map) +
+  tm_polygons("spesa_citt65",
+              style = "pretty",
+              palette = "Blues",
+              title = "Spesa per cittadini over 65",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65",
+                             "Utenti" = "utenti_tot",
+                             "Spesa servizi" = "spesa_tot")) +
+  tm_shape(italy_province) +
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) +
+  tm_layout(main.title = "Comuni della regione Marche - Map 2", main.title.size = 1.5)
+
+# Display the two maps side by side
+tmap_arrange(map1, map2)
+
 ```

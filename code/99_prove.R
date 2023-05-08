@@ -123,3 +123,5 @@ tm_shape(db_map) + # il database con i dati
   tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
   tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
 
+frq(db$perc_65)
+names(db)

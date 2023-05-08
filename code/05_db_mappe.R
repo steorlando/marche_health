@@ -91,7 +91,17 @@ db <- left_join(italy_comuni, comuni_map, by = "cod_istat")
 
 db <- db %>% relocate(territorio, .before = cod_istat) %>% 
   mutate(prop65_map = percent(perc_65, accuracy = 0.01)) %>% 
+  mutate(prop80_map = percent(perc_80, accuracy = 0.01)) %>% 
   var_labels(territorio         = "Comune",
-             over65             = "Pop over 65")
+             over65             = "Pop over 65",
+             over80             = "Pop over 80")
 
 
+# Calcolo spesa territoriale totale
+
+db <- db %>% 
+  mutate(spesa_tot = adi_spesa_tot + sad_spesa_tot + rsa_spesa_tot,
+         utenti_tot = adi_utenti + sad_utenti + rsa_utenti,
+         spesa_utente = spesa_tot / utenti_tot,
+         spesa_citt65 = spesa_tot / over65) 
+  
