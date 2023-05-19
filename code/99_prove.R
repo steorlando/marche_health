@@ -125,3 +125,56 @@ tm_shape(db_map) + # il database con i dati
 
 frq(db$perc_65)
 names(db)
+
+db_map <- db 
+
+tmap_mode("view")
+tm_shape(db_map) + # il database con i dati
+  tm_polygons("spesa_utente", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Spesa per utente servizi territoriali",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Utenti" = "utenti_tot", 
+                             "Spesa servizi" = "spesa_tot")) + 
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+
+library(tmap)
+db_map <- db
+tmap_mode("view")
+
+# Map 1: Spesa per utente servizi territoriali
+map1 <- tm_shape(db_map) +
+  tm_polygons("spesa_utente",
+              style = "pretty",
+              palette = "Blues",
+              title = "Spesa per utente servizi territoriali",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65",
+                             "Utenti" = "utenti_tot",
+                             "Spesa servizi" = "spesa_tot")) +
+  tm_shape(italy_province) +
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) +
+  tm_layout(main.title = "Comuni della regione Marche - Map 1", main.title.size = 1.5)
+
+# Map 2: Spesa per cittadini over 65
+map2 <- tm_shape(db_map) +
+  tm_polygons("spesa_citt65",
+              style = "pretty",
+              palette = "Blues",
+              title = "Spesa per cittadini over 65",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65",
+                             "Utenti" = "utenti_tot",
+                             "Spesa servizi" = "spesa_tot")) +
+  tm_shape(italy_province) +
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) +
+  tm_layout(main.title = "Comuni della regione Marche - Map 2", main.title.size = 1.5)
+
+# Display the two maps side by side
+tmap_arrange(map1, map2)
+map2
+

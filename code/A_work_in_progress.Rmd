@@ -150,7 +150,7 @@ Una scarsa offerta di servizi territoriali
 
 ## Spesa per servizi territoriali
 
-In totale nel 2022 i servizi territoriali (ADI, SAD e RSA) hanno avuto un costo di `r``format(spesa_terr, big.mark = ".")` € e hanno servito `r format(utenti_terr, big.mark = ".")` cittadini con un costo medio ad utente di `r format(round(spesa_terr/utenti_terr), big.mark = ".")` €.
+In totale nel 2022 i servizi territoriali (ADI, SAD e RSA) hanno avuto un costo di `r format(spesa_terr, big.mark = ".")` € e hanno servito `r format(utenti_terr, big.mark = ".")` cittadini con un costo medio ad utente di `r format(round(spesa_terr/utenti_terr), big.mark = ".")` €.
 
 Le due mappe seguenti mostrano la spesa per utente inserito nei servizi territoriali e la spesa divisa sul numero di cittadini over 65.
 
@@ -162,31 +162,33 @@ tmap_mode("view")
 map1 <- tm_shape(db_map) +
   tm_polygons("spesa_utente",
               style = "pretty",
-              palette = "Blues",
+              palette = "Greens",
               title = "Spesa per utente servizi territoriali",
               border.lwd = 0.5,
               popup.vars = c("Pop > di 65" = "over65",
                              "Utenti" = "utenti_tot",
                              "Spesa servizi" = "spesa_tot")) +
   tm_shape(italy_province) +
-  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) +
-  tm_layout(main.title = "Comuni della regione Marche - Map 1", main.title.size = 1.5)
+  tm_borders(lwd = 1.5, col = "darkblue", alpha = 0.5) +
+  tm_layout(main.title = "Comuni della regione Marche - Map 1", main.title.size = 1.5) +
+  tm_view(view.legend.position = c("left", "bottom"))
 
 # Map 2: Spesa per cittadini over 65
 map2 <- tm_shape(db_map) +
   tm_polygons("spesa_citt65",
               style = "pretty",
-              palette = "Blues",
+              palette = "Greens",
               title = "Spesa per cittadini over 65",
               border.lwd = 0.5,
               popup.vars = c("Pop > di 65" = "over65",
                              "Utenti" = "utenti_tot",
                              "Spesa servizi" = "spesa_tot")) +
   tm_shape(italy_province) +
-  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) +
-  tm_layout(main.title = "Comuni della regione Marche - Map 2", main.title.size = 1.5)
+  tm_borders(lwd = 1.5, col = "darkblue", alpha = 0.5) +
+  tm_layout(main.title = "Comuni della regione Marche - Map 2", main.title.size = 1.5) +
+  tm_view(view.legend.position = c("left", "bottom"))
 
 # Display the two maps side by side
-tmap_arrange(map1, map2)
+tmap_arrange(map1, map2, nrow = 2)
 
 ```
