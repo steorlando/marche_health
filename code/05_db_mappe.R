@@ -104,4 +104,48 @@ db <- db %>%
          utenti_tot = adi_utenti + sad_utenti + rsa_utenti,
          spesa_utente = spesa_tot / utenti_tot,
          spesa_citt65 = spesa_tot / over65) 
-  
+
+#Creo variabili con num sogg ricoverati per comune per patologia
+sintesi_sdo <- import("data/SINTESI_SDO_2019.xlsx") %>% 
+  clean_names()
+ 
+library(dplyr)
+sintesi_sdo <- sintesi_sdo %>%
+  rename(cod_istat = comresid)
+
+somma <- function(sintesi_sdo, variabili) {
+  risultati <- aggregate(sintesi_sdo[ ,variabili], by = list(sintesi_sdo$cod_istat), FUN = sum)
+  colnames(risultati)[1] <- "cod_istat"
+  return(risultati)
+}
+
+variabili_somma <- c("ipertensione", "ipo_iper_tiroidismo", "asma",                 
+                     "bpco", "diabete",              
+                     "diabete_complicato", "cardiopatia_ischemica",
+                     "scompenso_cardiaco", "demenze",              
+                     "irc_non_dialitica")
+
+risultati_somma <- somma(sintesi_sdo, variabili_somma)
+
+db <- merge(db, risultati_somma, by = "cod_istat", all.x = T)
+
+#Creo variabile con num sogg ricoverati per comune per patologia tra ps e ric_ordinario
+calculate_counts <- function(data, var_name, ps_value, merge_data) {
+  agg_data <- aggregate(data[[var_name]] ~ cod_istat, data = data, subset = ps == ps_value, FUN = sum)
+  names(agg_data)[2] <- paste0("num_", var_name, "_ps", ps_value)
+  merged_data <- merge(merge_data, agg_data, by = "cod_istat", all.x = T)
+  return(merged_data)
+}
+
+variables <- c("ipertensione", "ipo_iper_tiroidismo", "asma",                 
+               "bpco", "diabete",              
+               "diabete_complicato", "cardiopatia_ischemica",
+               "scompenso_cardiaco", "demenze",              
+               "irc_non_dialitica")
+ps_value <- c(0, 1)
+
+for (var in variables) {
+  for (ps_val in ps_value) {
+    db <- calculate_counts(sintesi_sdo, var, ps_val, db)
+  }
+}
