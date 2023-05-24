@@ -192,3 +192,48 @@ map2 <- tm_shape(db_map) +
 tmap_arrange(map1, map2, nrow = 2)
 
 ```
+
+Provo la mappa con i ricoveri 
+
+```{r mappa_ricoveri_pat}
+db_map <- db
+
+tmap_mode("view")
+
+map1 <- tm_shape(db_map) + # il database con i dati
+  tm_polygons("perc_ricoveri", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Percentuale ricoveri NCD su ric totali",
+              border.lwd = 0.5,
+              popup.vars = c("% ricoveri" = "perc_ricoveri",
+                             "Ricoveri NCD" = "ricoveri_pat",
+                             "% popo over 65" = "perc_65"
+              )) +
+ # tm_shape(db_map) +
+  #  tm_bubbles("perc_65", col = "red" , size = "perc_65", scale = 1.5, alpha = 0.5) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+
+map2 <- tm_shape(db_map) + # il database con i dati
+  tm_polygons("ricoveri_pat", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Percentuale ricoveri NCD su ric totali",
+              border.lwd = 0.5,
+              popup.vars = c("% ricoveri" = "perc_ricoveri",
+                             "Ricoveri NCD" = "ricoveri_pat",
+                             "% popo over 65" = "perc_65"
+              )) +
+ # tm_shape(db_map) +
+  #  tm_bubbles("perc_65", col = "red" , size = "perc_65", scale = 1.5, alpha = 0.5) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni della regione Marche", main.title.size = 1.5)
+
+# Display the two maps side by side
+tmap_arrange(map1, map2, nrow = 2)
+
+```
+

@@ -20,7 +20,8 @@ pacman::p_load(magrittr,      # Pipes
                skimr,
                sjlabelled,
                leaflet,
-               scales
+               scales,
+               gtsummary
                )        
 
 rm(list = ls())

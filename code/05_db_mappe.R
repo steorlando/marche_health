@@ -123,11 +123,11 @@ variabili_somma <- c("ipertensione", "ipo_iper_tiroidismo", "asma",
                      "bpco", "diabete",              
                      "diabete_complicato", "cardiopatia_ischemica",
                      "scompenso_cardiaco", "demenze",              
-                     "irc_non_dialitica")
+                     "irc_non_dialitica", "ricoveri_totali")
 
 risultati_somma <- somma(sintesi_sdo, variabili_somma)
 
-db <- merge(db, risultati_somma, by = "cod_istat", all.x = T)
+db <- left_join(db, risultati_somma, by = "cod_istat", all.x = T)
 
 #Creo variabile con num sogg ricoverati per comune per patologia tra ps e ric_ordinario
 calculate_counts <- function(data, var_name, ps_value, merge_data) {
@@ -149,3 +149,16 @@ for (var in variables) {
     db <- calculate_counts(sintesi_sdo, var, ps_val, db)
   }
 }
+
+# Calcolo variabili aggregate
+
+db <- db %>% 
+  mutate(ricoveri_pat = ipertensione+ ipo_iper_tiroidismo+ asma+                 
+               bpco+ diabete+              
+               diabete_complicato+ cardiopatia_ischemica+
+               scompenso_cardiaco+ demenze+              
+               irc_non_dialitica,
+         perc_ricoveri = ricoveri_pat / ricoveri_totali)
+
+db <- db %>% relocate(territorio, .before = cod_istat) %>% 
+  relocate(geometry, .after = cod_istat)
