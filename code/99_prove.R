@@ -208,3 +208,8 @@ tbl_regression <- tbl_regression(model)
 print(tbl_regression)
 
 names(db)
+
+install.packages("raster")
+install.packages("tmap")
+install.packages("terra")
+

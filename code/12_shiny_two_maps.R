@@ -1,8 +1,8 @@
 # App con due mappe a confronto ####
+load("my_work_space.RData")
 
-db_map <- db %>% 
-  mutate(None = 0)
-
+db_map <- db
+db_map$None <- 0 
 
 library(shiny)
 library(tmap)
@@ -14,41 +14,46 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput("gradient_var1", 
-                  label = "Variable for color gradient for Map 1:", 
+                  label = "Variabile da mappare (colore) Mappa 1:", 
                   choices = c("% anziani over 65" = "perc_65",
                               "% anziani over 80" = "perc_80", 
-                              "Ricoveri associati a NCDs" = "ricoveri_totali",
+                              "Ricoveri associati a NCDs" = "ricoveri_pat",
                               "% ricoveri associati a NCDs" = "perc_ricoveri"), 
                   selected = "perc_65"),
       selectInput("bubble_var1", 
-                  label = "Variable for bubble size for Map 1:", 
+                  label = "Variabile bubbles Mappa 1:", 
                   choices = c("None",
                               "Popolazione" = "popolazione",
+                              "Anziani > 65" = "over65",
+                              "Ricoveri associati a NCDs" = "ricoveri_pat",
                               "Num utenti ADI" = "adi_utenti",
-                              "Num utenti SAD" = "sad_utenti"), 
+                              "Num utenti SAD" = "sad_utenti"),  
                   selected = "None"),
       selectInput("gradient_var2", 
-                  label = "Variable for color gradient for Map 2:", 
+                  label = "Variabile da mappare (colore) Mappa 2:", 
                   choices = c("% anziani over 65" = "perc_65",
                               "% anziani over 80" = "perc_80", 
-                              "Ricoveri associati a NCDs" = "ricoveri_totali",
+                              "Ricoveri associati a NCDs" = "ricoveri_pat",
                               "% ricoveri associati a NCDs" = "perc_ricoveri"),  
                   selected = "perc_ricoveri"),
       selectInput("bubble_var2", 
-                  label = "Variable for bubble size for Map 2:", 
+                  label = "Variabile bubbles Mappa 1:", 
                   choices = c("None",
                               "Popolazione" = "popolazione",
+                              "Anziani > 65" = "over65",
+                              "Ricoveri associati a NCDs" = "ricoveri_pat",
                               "Num utenti ADI" = "adi_utenti",
                               "Num utenti SAD" = "sad_utenti"),  
                   selected = "None"),
       selectInput("popup_vars", 
-                  label = "Variables for popup:", 
+                  label = "Variabili per popup:", 
                   choices = c("% anziani over 65" = "perc_65",
                               "% anziani over 80" = "perc_80", 
-                              "Ricoveri associati a NCDs" = "ricoveri_totali",
+                              "Ricoveri associati a NCDs" = "ricoveri_pat",
                               "% ricoveri associati a NCDs" = "perc_ricoveri",
-                              "Popolazione" = "popolazione"), 
-                  selected = c("perc_65", "perc_ricoveri" ), 
+                              "Popolazione" = "popolazione",
+                              "Anziani > 65" = "over65"), 
+                  selected = c("popolazione", "over65", "ricoveri_pat", "perc_ricoveri" ), 
                   multiple = TRUE)
     ),
     
