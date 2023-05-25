@@ -206,3 +206,5 @@ tbl_regression <- tbl_regression(model)
 
 # stampa la tabella
 print(tbl_regression)
+
+names(db)
