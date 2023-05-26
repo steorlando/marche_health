@@ -5,10 +5,10 @@ account: stefano-orlando
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9188688
-bundleId: 7264743
+bundleId: 7265799
 url: https://stefano-orlando.shinyapps.io/marche_map/
-when: 1685055550.4776
-lastSyncTime: 1685055550.47761
+when: 1685079041.51289
+lastSyncTime: 1685079041.51291
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: 00_start.R|02_dati_disponibili.R|03_dati_demografici.R|03b_dati_demografici.R|05_db_mappe.R|05b_db_mappe_sdo.R|06_funzioni_per_mappe.R|07_dati_farma.R|08_dati_specialistica.R|09_dati_sdo.R|10_dati_report.R|11_shiny_one_map.R|30_creo_mappe.R|98_prove_shiny.R|99_prove.R|A_work_in_progress.html|A_work_in_progress.Rmd|db.geojson|db.rds
+ignoredFiles: 00_start.R|02_dati_disponibili.R|03_dati_demografici.R|03b_dati_demografici.R|05_db_mappe.R|05b_db_mappe_sdo.R|06_funzioni_per_mappe.R|07_dati_farma.R|08_dati_specialistica.R|09_dati_sdo.R|10_dati_report.R|11_shiny_one_map.R|30_creo_mappe.R|98_prove_shiny.R|99_prove.R|A_work_in_progress.html|A_work_in_progress.Rmd
