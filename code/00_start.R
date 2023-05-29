@@ -31,6 +31,8 @@ rm(list = ls())
 source(here::here("code","06_funzioni_per_mappe.R")) # ci lavora stefano
 source(here::here("code","03b_dati_demografici.R"))
 source(here::here("code","05_db_mappe.R")) # codice per preaprare il db principale
+source(here::here("code","05b_db_mappe_sdo.R")) # sistemo i dati elaborati da paolo su SDO
+source(here::here("code","05c_db_mappe_socio.R"))
 source(here::here("code","10_dati_report.R")) 
 
 

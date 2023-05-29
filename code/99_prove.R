@@ -213,4 +213,4 @@ install.packages("raster")
 install.packages("tmap")
 install.packages("terra")
 
-
+summary(db$rsa_spesa_tot)

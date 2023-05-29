@@ -7,54 +7,70 @@ db_map$None <- 0
 library(shiny)
 library(tmap)
 
+variabili_col <- c("% anziani over 65" = "perc_65",
+                   "% anziani over 80" = "perc_80", 
+                   "Ricoveri associati a NCDs" = "ricoveri_pat",
+                   "% ricoveri associati a NCDs" = "perc_ricoveri",
+                   "Spesa RSA" = "rsa_spesa_tot",
+                   "Spesa per anziano" = "spesa_citt65",
+                   "Spesa per utente" = "spesa_utente"
+)
+
+variabili_bubble <- c("None",
+                      "Popolazione" = "popolazione",
+                      "Anziani > 65" = "over65",
+                      "Ricoveri associati a NCDs" = "ricoveri_pat",
+                      "Num utenti ADI" = "adi_utenti",
+                      "Num utenti SAD" = "sad_utenti",
+                      "Anziani in RSA" = "rsa_utenti",
+                      "Spesa RSA" = "rsa_spesa_tot",
+                      "Spesa per anziano" = "spesa_citt65",
+                      "Spesa per utente" = "spesa_utente")
+
+variabili_pop <- c("% anziani over 65" = "perc_65",
+                   "% anziani over 80" = "perc_80", 
+                   "Ricoveri associati a NCDs" = "ricoveri_pat",
+                   "% ricoveri associati a NCDs" = "perc_ricoveri",
+                   "Popolazione" = "popolazione",
+                   "Anziani > 65" = "over65",
+                   "Anziani in RSA" = "rsa_utenti",
+                   "Spesa RSA" = "rsa_spesa_tot",
+                   "Spesa per anziano" = "spesa_citt65",
+                   "Spesa per utente" = "spesa_utente")
+
+
 # Define UI
 ui <- fluidPage(
   titlePanel("Comuni della regione Marche"),
-  
+  em("Versione mappa aggiornata il 29 maggio"),
   sidebarLayout(
     sidebarPanel(
       selectInput("gradient_var1", 
                   label = "Variabile da mappare (colore) Mappa 1:", 
-                  choices = c("% anziani over 65" = "perc_65",
-                              "% anziani over 80" = "perc_80", 
-                              "Ricoveri associati a NCDs" = "ricoveri_pat",
-                              "% ricoveri associati a NCDs" = "perc_ricoveri"), 
+                  choices = variabili_col, 
                   selected = "perc_65"),
       selectInput("bubble_var1", 
                   label = "Variabile bubbles Mappa 1:", 
-                  choices = c("None",
-                              "Popolazione" = "popolazione",
-                              "Anziani > 65" = "over65",
-                              "Ricoveri associati a NCDs" = "ricoveri_pat",
-                              "Num utenti ADI" = "adi_utenti",
-                              "Num utenti SAD" = "sad_utenti"),  
+                  choices = variabili_bubble,  
                   selected = "None"),
       selectInput("gradient_var2", 
                   label = "Variabile da mappare (colore) Mappa 2:", 
-                  choices = c("% anziani over 65" = "perc_65",
-                              "% anziani over 80" = "perc_80", 
-                              "Ricoveri associati a NCDs" = "ricoveri_pat",
-                              "% ricoveri associati a NCDs" = "perc_ricoveri"),  
+                  choices = variabili_col,  
                   selected = "perc_ricoveri"),
       selectInput("bubble_var2", 
                   label = "Variabile bubbles Mappa 1:", 
-                  choices = c("None",
-                              "Popolazione" = "popolazione",
-                              "Anziani > 65" = "over65",
-                              "Ricoveri associati a NCDs" = "ricoveri_pat",
-                              "Num utenti ADI" = "adi_utenti",
-                              "Num utenti SAD" = "sad_utenti"),  
+                  choices = variabili_bubble,  
                   selected = "None"),
       selectInput("popup_vars", 
                   label = "Variabili per popup:", 
-                  choices = c("% anziani over 65" = "perc_65",
-                              "% anziani over 80" = "perc_80", 
-                              "Ricoveri associati a NCDs" = "ricoveri_pat",
-                              "% ricoveri associati a NCDs" = "perc_ricoveri",
-                              "Popolazione" = "popolazione",
-                              "Anziani > 65" = "over65"), 
-                  selected = c("popolazione", "over65", "ricoveri_pat", "perc_ricoveri" ), 
-                  multiple = TRUE)
+                  choices = variabili_pop, 
+                  selected = c("popolazione", "over65", "ricoveri_pat", "perc_ricoveri"), 
+                  multiple = TRUE),
+      sliderInput("population_range", 
+                  label = "Popolosità dei comuni da visualizzare:", 
+                  min = 0, 
+                  max = max(db$popolazione, na.rm = TRUE), 
+                  value = c(2000, max(db$popolazione, na.rm = TRUE)))
     ),
     
     mainPanel(
@@ -70,14 +86,14 @@ ui <- fluidPage(
 server <- function(input, output) {
   output$map1 <- renderTmap({
     tmap_mode("view")
-    tm_shape(db_map) +
+    db_map_filtered <- db_map[db_map$popolazione >= input$population_range[1] & db_map$popolazione <= input$population_range[2], ]
+    tm_shape(db_map_filtered) +
       tm_polygons(input$gradient_var1, 
                   style = "equal", 
                   palette = "Blues", 
-                  #title = paste0("Confronto variabili"),
                   border.lwd = 0.5,
                   popup.vars = input$popup_vars) +
-      tm_shape(db_map) +
+      tm_shape(db_map_filtered) +
       tm_bubbles(input$bubble_var1, col = "red", size = input$bubble_var1, scale = 1.5, alpha = 0.5) +
       tm_shape(italy_province) +
       tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) +
@@ -87,14 +103,14 @@ server <- function(input, output) {
   
   output$map2 <- renderTmap({
     tmap_mode("view")
-    tm_shape(db_map) +
+    db_map_filtered <- db_map[db_map$popolazione >= input$population_range[1] & db_map$popolazione <= input$population_range[2], ]
+    tm_shape(db_map_filtered) +
       tm_polygons(input$gradient_var2, 
                   style = "equal", 
-                  palette = "Blues", 
-                 # title = paste0("Percentuale ", input$gradient_var2, " su popolazione"),
+                  palette = "Greens", 
                   border.lwd = 0.5,
                   popup.vars = input$popup_vars) +
-      tm_shape(db_map) +
+      tm_shape(db_map_filtered) +
       tm_bubbles(input$bubble_var2, col = "red", size = input$bubble_var2, scale = 1.5, alpha = 0.5) +
       tm_shape(italy_province) +
       tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) +
@@ -105,5 +121,3 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-
-
