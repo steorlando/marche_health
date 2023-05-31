@@ -1,5 +1,6 @@
 db_r <- db %>% 
-  filter(popolazione > 2000 )
+  filter(popolazione > 2000) %>% 
+  mutate(reddito_adj = reddito_2019/100)
 
 p <- ggplot(db_r, aes(x=perc_65, y=perc_ricoveri)) + 
   geom_point() + 
@@ -9,12 +10,51 @@ p <- ggplot(db_r, aes(x=perc_65, y=perc_ricoveri)) +
        title = "Scatter plot con linea di regressione")
 p
 
-
 # esegui la regressione lineare
-model <- lm(perc_ricoveri ~ perc_80, data = db_r)
+model <- lm(perc_ricoveri ~ perc_65, data = db_r)
+
 
 # crea la tabella di riepilogo
 tbl_regression <- tbl_regression(model)
 
 # stampa la tabella
 print(tbl_regression)
+
+# analisi univariata
+db_r1 <- db_r %>% 
+  dplyr::select(perc_ricoveri, perc_65, reddito_adj , totale_stranieri , istruzione_bassa) 
+
+univariata <- tbl_uvregression(data = db_r1,
+                               method = lm,
+                               y = perc_ricoveri)
+univariata
+
+# esegui la regressione lineare multivariabile
+model_multi <- lm(perc_ricoveri ~ perc_65 + reddito_adj, data = db_r)
+tbl_regression_multi <- tbl_regression(model_multi)
+
+tbl_regression_multi
+
+# Compute the residuals from the model
+resid <- residuals(model_multi)
+
+# Add residuals to the original data frame
+db_r_with_resid <- cbind(db_r, resid)
+
+# Sort the data frame by the absolute value of the residuals, in descending order
+db_r_with_resid <- db_r_with_resid[order(abs(db_r_with_resid$resid), decreasing = TRUE),]
+
+# Print the "territorio" and residuals
+db_r_with_resid[,c("territorio", "resid")]
+
+library(lmtest)
+bptest(model_multi)
+
+library(car)
+ncvTest(model_multi)
+
+plot(predict(model_multi), residuals(model_multi),
+     xlab = "Fitted values",
+     ylab = "Residuals")
+abline(h = 0, lty = 2)
+
