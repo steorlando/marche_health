@@ -13,3 +13,7 @@ dati_farmaceutici_territoriale <- import(file_path) %>% clean_names()
 
 skim(dati_farmaceutici_territoriale)
 names(dati_farmaceutici_territoriale)
+names(dati_farmaceutici_flusso)
+
+head(dati_farmaceutici_territoriale)
+head(dati_farmaceutici_flusso)

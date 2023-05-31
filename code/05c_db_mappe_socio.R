@@ -6,7 +6,7 @@ reddito <- import("data/socio-demo/I invio Richiesta Sanita_09_02_23.xlsx",
 db <- left_join(db, reddito[ , c("cod_istat", "reddito_2019")], by = "cod_istat")
 
 #Inserisco stranieri 
-stranieri <- read_excel("data/socio-demo/I invio Richiesta Sanita_09_02_23.xlsx",
+stranieri <- import("data/socio-demo/I invio Richiesta Sanita_09_02_23.xlsx",
                         sheet = "stranieri 2022") 
 stranieri <- stranieri %>%
   mutate(`65-74` = as.numeric(`65-74`),
