@@ -75,9 +75,6 @@ variabili <- c("ipertensione", "ipo_iper_tiroidismo", "asma",
 db <- percentuali(sintesi_sdo, db, variabili)
 
 
-
-
-
 # Calcolo variabili aggregate
 db <- db %>% 
   mutate(ricoveri_pat = ipertensione+ ipo_iper_tiroidismo+ asma+                 
