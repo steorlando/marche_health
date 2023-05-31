@@ -32,3 +32,10 @@ istruzione_bassa <- dplyr::select(istruzione, cod_istat, istruzione_bassa)
 
 
 db <- left_join(db, istruzione_bassa, by = "cod_istat")
+
+
+# DB per la mappa in cui unisco i dati per ciascun comune con i confini dei comuni
+db_map <- left_join(italy_comuni, comuni_map, by = "cod_istat") 
+
+db_map <- db %>% relocate(territorio, .before = cod_istat)
+

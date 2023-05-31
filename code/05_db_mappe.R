@@ -86,10 +86,8 @@ comuni_map <- left_join(comuni_map, adi)
 comuni_map <- left_join(comuni_map, sad)
 comuni_map <- left_join(comuni_map, rsa)
 
-# DB per la mappa in cui unisco i dati per ciascun comune con i confini dei comuni
-db <- left_join(italy_comuni, comuni_map, by = "cod_istat")
 
-db <- db %>% relocate(territorio, .before = cod_istat) %>% 
+db <- comuni_map %>% 
   mutate(prop65_map = percent(perc_65, accuracy = 0.01)) %>% 
   mutate(prop80_map = percent(perc_80, accuracy = 0.01)) %>% 
   var_labels(territorio         = "Comune",
