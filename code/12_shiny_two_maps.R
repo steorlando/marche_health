@@ -14,7 +14,9 @@ variabili_col <- c("% anziani over 65" = "perc_65",
                    "Spesa per anziano" = "spesa_citt65",
                    "Spesa per utente" = "spesa_utente",
                    "Ricoveri NCDs pesati per disabilità" = "ricoveri_w",
-                   "Peso in salute di ricoveri NCDs a cittadino" = "perc_ricoveri_w"
+                   "Peso in salute di ricoveri NCDs a cittadino" = "perc_ricoveri_w",
+                   "Num utenti ADI" = "adi_utenti",
+                   "Num utenti SAD" = "sad_utenti"
 )
 
 variabili_bubble <- c("None",

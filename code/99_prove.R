@@ -287,3 +287,35 @@ p <- ggplot(db, aes(x=perc_ricoveri, y=perc_ricoveri_w)) +
   labs(x = "Percentuale di ricveri attribuiti a NCD", y = "Peso di salute ricoveri NCDs per cittadino",
        title = "Scatter plot con linea di regressione")
 p
+
+
+# Mappa ADI con comuni bianchi (da provare 
+
+library(RColorBrewer)
+
+# create color palette
+n <- 100 # the number of colors to be in the palette
+palette <- colorRampPalette(c("white", brewer.pal(8, "Blues")))(n)
+
+# Define breaks
+breaks <- seq(0, max(db_map$adi_utenti), length.out = n)
+
+tmap_mode("plot")
+tm_shape(db_map) + 
+  tm_polygons("adi_utenti", 
+              style = "pretty", 
+              palette = palette, 
+              breaks = breaks, 
+              title = "Numero utenti in ADI",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(db_map) +
+  tm_bubbles("over65", col = "red" , size = "over65", scale = 1, alpha = 0.5, style = "pretty" ) +
+  tm_shape(italy_province) + 
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + 
+  tm_layout(main.title = "Comuni per numero di utenti SAD", main.title.size = 0.8,
+            legend.title.size = 0.8,
+            legend.position = c("left", "bottom"))
+
