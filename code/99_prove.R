@@ -274,3 +274,16 @@ somma <- function(sintesi_sdo, variabili) {
   colnames(risultati)[1] <- "cod_istat"
   return(risultati)
 }
+
+hist(db$perc_ricoveri)
+hist(log10 (db$ricoveri_w))
+
+names(db)
+
+p <- ggplot(db, aes(x=perc_ricoveri, y=perc_ricoveri_w)) + 
+  geom_point() + 
+  geom_smooth(method=lm, se=TRUE, color="red", fill="pink") + # Aggiunge una linea di regressione con intervallo di confidenza
+  theme_minimal() +
+  labs(x = "Percentuale di ricveri attribuiti a NCD", y = "Peso di salute ricoveri NCDs per cittadino",
+       title = "Scatter plot con linea di regressione")
+p

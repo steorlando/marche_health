@@ -1,0 +1,155 @@
+---
+title: "Primo report"
+output: word_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = F, warning = F, ft.align = "left", ft.keepnext = F)
+load("my_work_space.RData")
+
+library(tidyverse)
+library(magrittr)
+library(officer)
+library(flextable)
+library(ggplot2)
+library(scales)
+library(janitor)
+library(here)
+library(lubridate)
+library(gtsummary)
+library(lsr)
+library(tmap)
+
+set_flextable_defaults(font.size = 9,
+                       table.layout = "autofit",
+                       theme_fun = "theme_booktabs",
+                       padding.bottom = 1,
+                       padding.right = 5
+                       )
+
+std_border <- fp_border(color = "grey", style = "solid", width = 1 )
+
+db_map1 <- db_map %>%
+  filter(popolazione > 2000)
+
+```
+
+Nelle marche ci sono `r formatC(tot_popolazione, big.mark=".")` residenti distribuiti su `r nrow(db)` comuni con una popolazione media di `r formatC(media_comune, big.mark=".", decimal.mark=",")` persone a comune. In totale `r n_2000` hanno meno di 2000 abitanti.
+
+In tutte le analisi seguenti questi comuni sono stati esclusi per due motivi:
+
+-   Statistico: sono comuni in cui le proporzioni sono meno attendibili (es. avere 30 anziani in un comune di 50 residenti vuol dire avere il 60% di anziani, ma questo dato statisticamente è poco attendibile perché il denominatore è piccolo
+
+-   Per le implicazioni operative: in questi comuni il numero assoluto di persone che hanno bisogno di servizi sanitari è minimo rispetto ad altri comuni. Ciò non vuol dire escluderli dai servizi. Al contrario i servizi sanitari territoriali mobili hanno il vantaggio di poter raggiungere i piccoli comuni, ma in fase di programmazione conviene partire dai comuni più grandi, e poi i servizi pensati per quei comuni possono raggiungere i comuni limitrofi più piccoli.
+
+# Dati anagrafici
+
+La presenza degli anziani nei vari comuni è un dato importante per stimare il bisogno di salute, perché l'età è associata ad aumento di patologie croniche non trasmissibili, ovvero malattie prevenibili, molto costose da trattare, e per le quali il sistema ospedalocentrico è meno efficiente [aggiungere note?]
+
+Le mappe e le tabelle seguenti mostrano i comuni con più anziani nella regione, sia in termini assoluti che in proporzione alla popolazione
+
+## Numero di residenti con più di 65 anni
+
+```{r mappa_over65, dpi=300, fig.width=5}
+
+tmap_mode("plot")
+tm_shape(db_map1) + # il database con i dati
+  tm_polygons("over65", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Popolazione > 65 anni",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per numero di anziani", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+
+```
+
+```{r tabella_over65}
+
+# Create a FlexTable object
+tab <- flextable(com_anziani)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "perc_65",
+                       value = as_paragraph(percent(perc_65, accuracy = 0.1)))
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 popolazione = "Popolazione Totale", 
+                                 over65 = "Anziani over 65", 
+                                 perc_65 = "Percentuale Over 65")
+
+
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 15 comuni con la popolazione over 65 più alta")
+
+
+# Print the result
+tab
+
+```
+
+### Percentuale di residenti con più di 65 anni
+
+```{r mappa_over65_perc, dpi=300, fig.width=5}
+tmap_mode("plot")
+tm_shape(db_map1) + # il database con i dati
+  tm_polygons("perc_65", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "% anziani con più di 65 anni",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per % di anziani", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+
+```
+
+```{r}
+# Create a FlexTable object
+tab <- flextable(perc_anziani)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "perc_65",
+                       value = as_paragraph(percent(perc_65, accuracy = 0.1)))
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 popolazione = "Popolazione Totale", 
+                                 over65 = "Anziani over 65", 
+                                 perc_65 = "Percentuale Over 65")
+
+
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 15 comuni con la percentuale di over 65 più alta")
+
+
+# Print the result
+tab
+```

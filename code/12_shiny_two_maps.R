@@ -1,7 +1,6 @@
 # App con due mappe a confronto ####
 load("my_work_space.RData")
 
-db_map <- db
 db_map$None <- 0 
 
 library(shiny)
@@ -13,7 +12,9 @@ variabili_col <- c("% anziani over 65" = "perc_65",
                    "% ricoveri associati a NCDs" = "perc_ricoveri",
                    "Spesa RSA" = "rsa_spesa_tot",
                    "Spesa per anziano" = "spesa_citt65",
-                   "Spesa per utente" = "spesa_utente"
+                   "Spesa per utente" = "spesa_utente",
+                   "Ricoveri NCDs pesati per disabilità" = "ricoveri_w",
+                   "Peso in salute di ricoveri NCDs a cittadino" = "perc_ricoveri_w"
 )
 
 variabili_bubble <- c("None",
@@ -25,7 +26,9 @@ variabili_bubble <- c("None",
                       "Anziani in RSA" = "rsa_utenti",
                       "Spesa RSA" = "rsa_spesa_tot",
                       "Spesa per anziano" = "spesa_citt65",
-                      "Spesa per utente" = "spesa_utente")
+                      "Spesa per utente" = "spesa_utente",
+                      "Ricoveri NCDs pesati per disabilità" = "ricoveri_w",
+                      "Peso in salute di ricoveri NCDs a cittadino" = "perc_ricoveri_w")
 
 variabili_pop <- c("% anziani over 65" = "perc_65",
                    "% anziani over 80" = "perc_80", 
@@ -36,7 +39,8 @@ variabili_pop <- c("% anziani over 65" = "perc_65",
                    "Anziani in RSA" = "rsa_utenti",
                    "Spesa RSA" = "rsa_spesa_tot",
                    "Spesa per anziano" = "spesa_citt65",
-                   "Spesa per utente" = "spesa_utente")
+                   "Spesa per utente" = "spesa_utente",
+                   "Peso in salute di ricoveri NCDs a cittadino" = "perc_ricoveri_w")
 
 
 # Define UI

@@ -193,7 +193,7 @@ tmap_arrange(map1, map2, nrow = 2)
 
 ```
 
-Provo la mappa con i ricoveri 
+Provo la mappa con i ricoveri
 
 ```{r mappa_ricoveri_pat}
 db_map <- db
@@ -236,4 +236,3 @@ map2 <- tm_shape(db_map) + # il database con i dati
 tmap_arrange(map1, map2, nrow = 2)
 
 ```
-

@@ -22,7 +22,8 @@ pacman::p_load(magrittr,      # Pipes
                leaflet,
                scales,
                gtsummary,
-               shiny
+               shiny,
+               broom
                )        
 
 rm(list = ls())
