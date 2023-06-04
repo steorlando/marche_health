@@ -78,3 +78,66 @@ perc_anziani <- db %>%
   mutate(row_order = row_number()) %>% 
   select("row_order", "territorio", "perc_65", "over65",  "popolazione")
 
+# I primi 10 comuni per utenti SAD su popolazione
+# Perform the operations
+perc_sad <- db %>%
+  # Filter the municipalities with population higher than 2000
+  filter(popolazione > 2000) %>%
+  # Select necessary columns
+  select(territorio, popolazione, sad_utenti, over65, sad_spesa_tot, sad_spesa_utente, sad_spesa_anziano ) %>%
+  mutate(perc_sad_utenti = sad_utenti / popolazione) %>% 
+  # Arrange the data in descending order based on the number of people over 65
+  arrange(desc(perc_sad_utenti)) %>%
+  # Get the top 10 records
+  head(10) %>% 
+  mutate(row_order = row_number()) %>% 
+  select("row_order", "territorio", "sad_utenti", "sad_spesa_tot", "sad_spesa_utente", "sad_spesa_anziano", "over65")
+
+# I primi 10 comuni per MENO utenti SAD su popolazione (dove presente)
+# Perform the operations
+perc_sad_less <- db %>%
+  # Filter the municipalities with population higher than 2000
+  filter(popolazione > 2000) %>%
+  filter(sad_utenti > 0) %>% 
+  # Select necessary columns
+  select(territorio, popolazione, sad_utenti, sad_spesa_tot, sad_spesa_utente, sad_spesa_anziano, over65 ) %>%
+  mutate(perc_sad_utenti = sad_utenti / popolazione) %>% 
+  # Arrange the data in descending order based on the number of people over 65
+  arrange(perc_sad_utenti) %>%
+  # Get the top 10 records
+  head(10) %>% 
+  mutate(row_order = row_number()) %>% 
+  select("row_order", "territorio", "sad_utenti", "sad_spesa_tot", "sad_spesa_utente", "sad_spesa_anziano", "over65")
+
+# I primi 15 comuni per spesa RSA per anziano
+# Perform the operations
+rsa_spesa <- db %>%
+  # Filter the municipalities with population higher than 2000
+  filter(popolazione > 2000) %>%
+  # Select necessary columns
+  select(territorio, popolazione, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65 ) %>%
+  # Arrange the data in descending order based on the number of people over 65
+  arrange(desc(rsa_spesa_anziano)) %>%
+  # Get the top 10 records
+  head(15) %>% 
+  mutate(row_order = row_number()) %>% 
+  select(row_order, territorio, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65)
+
+# I primi 15 comuni per minore spesa RSA per anziano
+# Perform the operations
+rsa_spesa_less <- db %>%
+  # Filter the municipalities with population higher than 2000
+  filter(popolazione > 2000) %>%
+  filter(rsa_utenti > 0) %>% 
+  # Select necessary columns
+  select(territorio, popolazione, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65 ) %>%
+  # Arrange the data in descending order based on the number of people over 65
+  arrange(rsa_spesa_anziano) %>%
+  # Get the top 10 records
+  head(15) %>% 
+  mutate(row_order = row_number()) %>% 
+  select(row_order, territorio, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65)
+
+
+# Save image ####
+save.image (file = "code/my_work_space.RData")

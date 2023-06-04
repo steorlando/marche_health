@@ -101,6 +101,12 @@ db <- db %>%
   mutate(spesa_tot = adi_spesa_tot + sad_spesa_tot + rsa_spesa_tot,
          utenti_tot = adi_utenti + sad_utenti + rsa_utenti,
          spesa_utente = spesa_tot / utenti_tot,
-         spesa_citt65 = spesa_tot / over65) 
+         spesa_citt65 = spesa_tot / over65,
+         sad_spesa_anziano = sad_spesa_tot / over65,
+         adi_spesa_anziano = adi_spesa_tot / over65,
+         sad_spesa_utente = sad_spesa_tot / sad_utenti,
+         adi_spesa_utente = adi_spesa_tot / adi_utenti,
+         rsa_spesa_anziano = rsa_spesa_tot / over65,
+         rsa_spesa_utente = rsa_spesa_tot / rsa_utenti) 
 
 

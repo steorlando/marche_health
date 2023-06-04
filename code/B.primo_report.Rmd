@@ -35,7 +35,7 @@ db_map1 <- db_map %>%
 
 ```
 
-Nelle marche ci sono `r formatC(tot_popolazione, big.mark=".")` residenti distribuiti su `r nrow(db)` comuni con una popolazione media di `r formatC(media_comune, big.mark=".", decimal.mark=",")` persone a comune. In totale `r n_2000` hanno meno di 2000 abitanti.
+Nelle marche ci sono `r formatC(tot_popolazione, big.mark=".")` residenti distribuiti su `r nrow(db)` comuni con una popolazione media di `r formatC(media_comune, big.mark=".", decimal.mark=",")` persone a comune. In totale `r n_2000` hanno meno di 2.000 abitanti.
 
 In tutte le analisi seguenti questi comuni sono stati esclusi per due motivi:
 
@@ -124,7 +124,7 @@ tm_shape(db_map1) + # il database con i dati
 
 ```
 
-```{r}
+```{r tab_proporzione_anziani}
 # Create a FlexTable object
 tab <- flextable(perc_anziani)
 
@@ -154,6 +154,10 @@ tab <- set_caption(tab, caption = "Top 15 comuni con la percentuale di over 65 p
 tab
 ```
 
+### Commenti
+
+Ascoli Piceno e Falconara Marittima sono due comuni dove è importante intervenire perchè hanno molti anziani sia in termini assoluti che in percentuale della popolazione.
+
 ## Servizi domiciliari
 
 I principali servizi domiciliari sono
@@ -166,11 +170,15 @@ Le mappe seguenti indicano la presenza di questi servizi nei comuni. La dimensio
 
 Le tabelle indicano
 
+-   dove è presente la SAD
+
 -   dove è presente l'ADI (solo due comuni)
 
 -   I 10 comuni con più utenti SAD in proporzione alla popolazione
 
 -   I 10 comuni con meno utenti SAD in proporzione alla popolazione
+
+Bisogna tener presente che `r sum(db$sad_utenti == 0)` su `r nrow(db)` non hanno alcun utente in SAD, e sono stati esclusi dalla tabella.
 
 ```{r mappa_adi_sad, dpi=300, fig.width=7, fig.height= 7}
 tmap_mode("plot")
@@ -184,7 +192,7 @@ tm_shape(db_map1) + # il database con i dati
                              "Pop totale" = "popolazione", 
                              "% anziani > 65" = "prop65_map")) + 
   tm_shape(db_map1) +
-    tm_bubbles("over65", col = "red" , size = "over65", scale = 1, alpha = 0.5, style = "pretty" ) +
+    tm_bubbles("over65", col = "red" , size = "over65", scale = 1, alpha = 0.5, style = "pretty", legend.size.show = F) +
   tm_shape(italy_province) + # Aggiungi i confini delle province
   tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
   tm_layout(main.title = "Comuni per numero di utenti SAD", main.title.size = 0.8,
@@ -214,7 +222,7 @@ tm_shape(db_map1) +
                              "Pop totale" = "popolazione", 
                              "% anziani > 65" = "prop65_map")) + 
   tm_shape(db_map1) +
-  tm_bubbles("over65", col = "red" , size = "over65", scale = 1, alpha = 0.5, style = "pretty" ) +
+  tm_bubbles("over65", col = "red" , size = "over65", scale = 1, alpha = 0.5, style = "pretty" , legend.size.show = F) +
   tm_shape(italy_province) + 
   tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + 
   tm_layout(main.title = "Comuni per numero di utenti ADI", main.title.size = 0.8,
@@ -222,3 +230,184 @@ tm_shape(db_map1) +
             legend.position = c("left", "bottom"))
 
 ```
+
+```{r tab_prop_sad}
+# Create a FlexTable object
+tab <- flextable(perc_sad)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "sad_spesa_utente",
+                       value = as_paragraph(floor(sad_spesa_utente))) 
+tab <-  compose(tab, 
+                       j = "sad_spesa_anziano",
+                       value = as_paragraph(floor(sad_spesa_anziano)))
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 sad_utenti = "Utenti SAD", 
+                                 sad_spesa_tot = "Spesa per SAD", 
+                                 sad_spesa_anziano = "Spesa SAD per anziano",
+                                 sad_spesa_utente = "Spesa SAD per utente",
+                         over65 = "N. anziani (over 65)")
+
+
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 10 comuni per utenti SAD su popolazione over 65")
+
+
+# Print the result
+tab
+```
+
+```{r tab_propo_sad_less}
+tab <- flextable(perc_sad_less)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "sad_spesa_utente",
+                       value = as_paragraph(floor(sad_spesa_utente))) 
+
+tab <-  compose(tab, 
+                       j = "sad_spesa_anziano",
+                       value = as_paragraph(floor(sad_spesa_anziano)))
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 sad_utenti = "Utenti SAD", 
+                                 sad_spesa_tot = "Spesa per SAD", 
+                                 sad_spesa_anziano = "Spesa SAD per anziano",
+                                 sad_spesa_utente = "Spesa SAD per utente",
+                         over65 = "N. anziani (over 65)")
+
+
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 10 comuni per utenti SAD su popolazione over 65")
+
+
+# Print the result
+tab
+```
+
+### Commenti
+
+[EXP] Si può commentare che dato l'alta percentuale di anzini per comune l'alta prevalenza di malattie croniche (non ancora affrontata qui, ma nei report della regione) l'offerta di servizi domiciliari, sia sociali che sanitari, è del tutto inadeguata. Solo due comuni hanno l'ADI. La SAD è leggermente più diffusa, ma comunque molto poco sia in termini di anziani serviit, sia in termini di spesa per anziano.
+
+## Spsa per RSA (Residenza Sanitaria Assistenziale)
+
+L'RSA è un servizio territoriale ma non domiciliare. anche in questo caso si tratta di un servizio la cui domanda è in aumento per l'invecchiamento della popolazione, ed è piuttosto costoso. Pertanto è utile riflettere sull'uso appropriato e su come renderlo più efficiente.
+
+La mappa seguente riporta la spesa totale per RSA, e il numero totale di anziani assisti per comune.
+
+Le tabelle i 15 comuni che spendono rispettivamente di più  e di meno per anziano per questo servizio.
+
+Bisogna tener presente che `r sum(db$rsa_utenti == 0)` su `r nrow(db)` comuni non hanno alcun utente in RSA (ad esempio il comune di Macerata), e sono stati esclusi dalla tabella, ma meritano una analisi specifica.
+
+```{r mappa_rsa}
+tmap_mode("plot")
+tm_shape(db_map1) + # il database con i dati
+  tm_polygons("rsa_spesa_tot", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Spesa totale per RSA",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(db_map1) +
+    tm_bubbles("rsa_utenti", col = "red" , size = "rsa_utenti", scale = 1, alpha = 0.5, style = "pretty", legend.size.show = F) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per spesa totale RSA e numero utenti", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+
+```
+
+```{r tab_rsa}
+tab <- flextable(rsa_spesa)
+
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "rsa_spesa_utente",
+                       value = as_paragraph(floor(rsa_spesa_utente))) 
+
+tab <-  compose(tab, 
+                       j = "rsa_spesa_anziano",
+                       value = as_paragraph(floor(rsa_spesa_anziano)))
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 rsa_utenti = "Utenti RSA", 
+                                 rsa_spesa_tot = "Spesa totale per RSA", 
+                                 rsa_spesa_anziano = "Spesa RSA per anziano",
+                                 rsa_spesa_utente = "Spesa RSA per utente",
+                         over65 = "N. anziani (over 65)")
+
+
+tab
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 10 comuni per utenti SAD su popolazione over 65")
+
+
+# Print the result
+tab
+
+```
+
+
+```{r tab_rsa_less}
+tab <- flextable(rsa_spesa_less)
+
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "rsa_spesa_utente",
+                       value = as_paragraph(round(rsa_spesa_utente, digits= 2))) 
+
+tab <-  compose(tab, 
+                       j = "rsa_spesa_anziano",
+                       value = as_paragraph(round(rsa_spesa_anziano, digits= 2)))
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 rsa_utenti = "Utenti RSA", 
+                                 rsa_spesa_tot = "Spesa totale per RSA", 
+                                 rsa_spesa_anziano = "Spesa RSA per anziano",
+                                 rsa_spesa_utente = "Spesa RSA per utente",
+                         over65 = "N. anziani (over 65)")
+
+
+tab
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 10 comuni per utenti SAD su popolazione over 65")
+
+
+# Print the result
+tab
+```
+
+
+### Commenti
+
+[EXP] commentare che bisogna interpretare correttamente questi dati. La spesa alta o bassa non è necessariamente un problema. A volte si spende poco perchè si stanza poco, ma non suggeriamo che si deba spendere più o meno, ma spendere meglio, inserendo le RSA all'interno del continuum assistenziale, aumentandone l'accesso quando ci sono situazioni critiche che richiedono ricoveri lunghi, e diminuendo gli utenti che vi entrano a vita anche quando potrebbero essere curati a casa.
