@@ -139,7 +139,7 @@ rsa_spesa_less <- db %>%
   select(row_order, territorio, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65)
 
 
-# Elenco ricoveri per patologia e provincia
+# Elenco ricoveri per patologia e provincia ####
 
 # List of diseases
 diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
@@ -174,7 +174,6 @@ df_wide_prop <- df_summary %>%
 df_final <- df_wide_sum %>%
   full_join(df_wide_prop, by = "disease")
 
-
 # Get the unique provinces
 provinces <- unique(df_diseases$provincia)
 
@@ -193,6 +192,43 @@ library(purrr)
 df_final <- df_final %>%
   mutate(total_sum = select(., ends_with("_sum")) %>% 
            reduce(`+`))
+
+# Comuni che si discostano dalla regressione
+
+resid_plus <- db_resid_multi %>%
+  # Filter the municipalities with population higher than 2000
+  filter(resid > 0) %>% 
+  # Select necessary columns
+  select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri ) %>%
+  # Arrange the data in descending order based on the number of people over 65
+  # Get the top 15 records
+  head(15) %>% 
+  mutate(row_order = row_number()) %>% 
+  relocate(row_order, .before = cod_istat) 
+
+resid_less <- db_resid_multi %>%
+  # Filter the municipalities with population higher than 2000
+  filter(resid < 0) %>%
+  arrange(resid) %>% 
+  # Select necessary columns
+  select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri ) %>%
+  # Arrange the data in descending order based on the number of people over 65
+  # Get the top 15 records
+  head(15) %>% 
+  mutate(row_order = row_number()) %>% 
+  relocate(row_order, .before = cod_istat) 
+
+db_plus <- resid_plus %>% 
+  mutate(col = "red")
+
+db_less <- resid_less %>% 
+  mutate(col = "green")
+
+db_resid <- rbind(db_plus, db_less) %>% select(-row_order)
+
+# DB per la mappa in cui unisco i dati per ciascun comune con i confini dei comuni
+db_map_res <- left_join(italy_comuni, db_resid, by = "cod_istat") 
+db_map_res <- db_map_res %>% relocate(territorio, .before = cod_istat)
 
 
 # Save image ####

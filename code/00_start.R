@@ -23,7 +23,8 @@ pacman::p_load(magrittr,      # Pipes
                scales,
                gtsummary,
                shiny,
-               broom
+               broom,
+               purrr
                )        
 
 rm(list = ls())
@@ -37,11 +38,12 @@ source(here::here("code","03b_dati_demografici.R"))
 source(here::here("code","05_db_mappe.R")) # codice per preaprare il db principale
 source(here::here("code","05b_db_mappe_sdo.R")) # sistemo i dati elaborati da paolo su SDO
 source(here::here("code","05c_db_mappe_socio.R"))
+source(here::here("code","13_regressione.R"))
 source(here::here("code","10_dati_report.R")) 
 
 
 # Save image ####
 #save.image (file = "code/my_work_space.RData")
 
-#Sys.setlocale("LC_NUMERIC", "C") # quando faccio il report lo cambio in italiano. Questo è per tornare all'inglese. 
+# Sys.setlocale("LC_NUMERIC", "C") # quando faccio il report lo cambio in italiano. Questo è per tornare all'inglese. 
 

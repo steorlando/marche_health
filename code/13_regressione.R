@@ -22,7 +22,6 @@ tbl_regression <- tbl_regression(model) %>%
   )
 
 # stampa la tabella
-print(tbl_regression)
 
 # analisi univariata
 db_r1 <- db_r %>% 
@@ -31,7 +30,7 @@ db_r1 <- db_r %>%
 univariata <- tbl_uvregression(data = db_r1,
                                method = lm,
                                y = perc_ricoveri)
-univariata
+
 
 # esegui la regressione lineare multivariabile
 model_multi <- lm(perc_ricoveri ~ perc_65 + reddito_adj, data = db_r)
@@ -41,7 +40,7 @@ tbl_regression_multi <- tbl_regression(model_multi) %>%
     include = c(r.squared, adj.r.squared, AIC, nobs)
   )
 
-tbl_regression_multi
+
 
 # Compute the residuals from the model
 resid <- residuals(model_multi)
@@ -50,10 +49,8 @@ resid <- residuals(model_multi)
 db_r_with_resid <- cbind(db_r, resid)
 
 # Sort the data frame by the absolute value of the residuals, in descending order
-db_r_with_resid <- db_r_with_resid[order(abs(db_r_with_resid$resid), decreasing = TRUE),]
+db_resid_multi <- db_r_with_resid[order(abs(db_r_with_resid$resid), decreasing = TRUE),]
 
-# Print the "territorio" and residuals
-db_r_with_resid[,c("territorio", "resid")]
 
 library(lmtest)
 bptest(model_multi)
@@ -77,7 +74,7 @@ p <- ggplot(db_r, aes(x=perc_65, y=perc_ricoveri_w)) +
   theme_minimal() +
   labs(x = "Percentuale di persone over 65", y = "Percentuale di ricoveri",
        title = "Scatter plot con linea di regressione")
-p
+
 
 library(broom)
 library(gtsummary)
@@ -95,8 +92,6 @@ tbl_regression <- tbl_regression(model) %>%
   )
 
 
-# Print the table
-print(tbl_regression)
 
 
 # analisi univariata
@@ -106,7 +101,7 @@ db_r1 <- db_r %>%
 univariata <- tbl_uvregression(data = db_r1,
                                method = lm,
                                y = perc_ricoveri_w)
-univariata
+
 
 # Compute the residuals from the model
 resid <- residuals(model)
@@ -117,8 +112,6 @@ db_r_with_resid <- cbind(db_r, resid)
 # Sort the data frame by the absolute value of the residuals, in descending order
 db_r_with_resid <- db_r_with_resid[order(abs(db_r_with_resid$resid), decreasing = TRUE),]
 
-# Print the "territorio" and residuals
-db_r_with_resid[,c("territorio", "resid")]
 
 library(lmtest)
 bptest(model_multi)
@@ -126,7 +119,7 @@ bptest(model_multi)
 library(car)
 ncvTest(model_multi)
 
-plot(predict(model_multi), residuals(model_multi),
+p_resid <- plot(predict(model_multi), residuals(model_multi),
      xlab = "Fitted values",
      ylab = "Residuals")
 abline(h = 0, lty = 2)

@@ -479,3 +479,40 @@ df_final <- df_final %>%
 
 # Print the resulting dataframe
 print(df_final)
+
+db_map_res$col <- as.factor(db_map_res$col)
+
+tmap_mode("plot")
+tm_shape(db_map_res) + # il database con i dati
+  tm_polygons("col", # il dato da mappare
+              palette = c("green", "red", "white"), # set colors for different categories
+              missing = "white", # set color for NA
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per numero di anziani", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+
+# Factorize your "col" column with custom labels
+db_map_res$col <- factor(db_map_res$col, 
+                         levels = c("red", "green", "Na"), 
+                         labels = c("Più ricoveri", "Meno ricoveri", ""))
+
+tmap_mode("plot")
+tm_shape(db_map_res) + # il database con i dati
+  tm_polygons("col", # il dato da mappare
+              palette = c("red", "green", "white"), # set colors for different categories
+              missing = "white", # set color for NA
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per numero di anziani", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
