@@ -319,3 +319,163 @@ tm_shape(db_map) +
             legend.title.size = 0.8,
             legend.position = c("left", "bottom"))
 
+# Load the necessary libraries
+library(dplyr)
+library(janitor)
+
+# List of diseases
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
+              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
+              "demenze", "irc_non_dialitica")
+
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(provincia, all_of(diseases), ricoveri_totali)
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  gather(key = "disease", value = "value", -provincia, -ricoveri_totali)
+
+# Summarize the data by provincia and disease
+df_summary <- df_long %>%
+  group_by(provincia, disease) %>%
+  summarise(sum_value = sum(value, na.rm = TRUE), 
+            proportion = sum_value / sum(ricoveri_totali, na.rm = TRUE))
+
+# Spread the data to wide format
+df_wide <- df_summary %>%
+  pivot_wider(names_from = provincia, values_from = c(sum_value, proportion))
+
+# prov2 ####
+
+# Load the necessary libraries
+library(dplyr)
+library(janitor)
+library(tidyverse)
+
+# List of diseases
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
+              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
+              "demenze", "irc_non_dialitica")
+
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(provincia, all_of(diseases), ricoveri_totali)
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by provincia and disease
+df_summary <- df_long %>%
+  group_by(provincia, disease) %>%
+  summarise(sum_value = sum(value, na.rm = TRUE), 
+            proportion = sum_value / sum(ricoveri_totali, na.rm = TRUE))
+
+# Spread the data to wide format
+df_wide <- df_summary %>%
+  pivot_wider(names_from = provincia, values_from = c(sum_value, proportion))
+
+# Print the resulting dataframe
+print(df_wide)
+
+# prova 3 ####
+# Load the necessary libraries
+library(dplyr)
+library(janitor)
+library(tidyverse)
+
+# List of diseases
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
+              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
+              "demenze", "irc_non_dialitica")
+
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(provincia, all_of(diseases), ricoveri_totali)
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by provincia and disease
+df_summary <- df_long %>%
+  group_by(provincia, disease) %>%
+  summarise(sum_value = sum(value, na.rm = TRUE), 
+            proportion = round((sum_value / sum(ricoveri_totali, na.rm = TRUE)) * 100, 1))
+
+# Spread the data to wide format
+df_wide <- df_summary %>%
+  pivot_wider(names_from = provincia, 
+              values_from = c(sum_value, proportion),
+              names_glue = "{provincia}_{.value}")
+
+# Get the unique provinces
+provinces <- unique(df_diseases$provincia)
+
+# Manually specify the column order
+column_order <- c("disease", sort(c(paste0(provinces, "_sum"), paste0(provinces, "_prop"))))
+
+# Reorder the columns
+df_wide <- df_wide[, column_order]
+
+
+# Print the resulting dataframe
+print(df_wide)
+
+# prova 4 ####
+
+# Load the necessary libraries
+library(dplyr)
+library(janitor)
+library(tidyverse)
+
+# List of diseases
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
+              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
+              "demenze", "irc_non_dialitica")
+
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(provincia, all_of(diseases), ricoveri_totali)
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by provincia and disease
+df_summary <- df_long %>%
+  group_by(provincia, disease) %>%
+  summarise(sum_value = sum(value, na.rm = TRUE), 
+            proportion = round((sum_value / sum(ricoveri_totali, na.rm = TRUE)) * 100, 1))
+
+# Spread the data to wide format for sum_value
+df_wide_sum <- df_summary %>%
+  select(-proportion) %>%
+  pivot_wider(names_from = provincia, values_from = sum_value, names_glue = "{provincia}_sum")
+
+# Spread the data to wide format for proportion
+df_wide_prop <- df_summary %>%
+  select(-sum_value) %>%
+  pivot_wider(names_from = provincia, values_from = proportion, names_glue = "{provincia}_prop")
+
+# Join the two data frames together
+df_final <- df_wide_sum %>%
+  full_join(df_wide_prop, by = "disease")
+
+
+# Get the unique provinces
+provinces <- unique(df_diseases$provincia)
+
+# Manually specify the column order
+column_order <- c("disease", sort(c(paste0(provinces, "_prop"), paste0(provinces, "_sum"))))
+
+# Reorder the columns
+df_final <- df_final[, column_order]
+
+df_final <- df_final %>% 
+  adorn_totals("row")
+
+
+# Print the resulting dataframe
+print(df_final)

@@ -139,5 +139,61 @@ rsa_spesa_less <- db %>%
   select(row_order, territorio, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65)
 
 
+# Elenco ricoveri per patologia e provincia
+
+# List of diseases
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
+              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
+              "demenze", "irc_non_dialitica")
+
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(provincia, all_of(diseases), ricoveri_totali)
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by provincia and disease
+df_summary <- df_long %>%
+  group_by(provincia, disease) %>%
+  summarise(sum_value = sum(value, na.rm = TRUE), 
+            proportion = round((sum_value / sum(ricoveri_totali, na.rm = TRUE)) * 100, 1))
+
+# Spread the data to wide format for sum_value
+df_wide_sum <- df_summary %>%
+  select(-proportion) %>%
+  pivot_wider(names_from = provincia, values_from = sum_value, names_glue = "{provincia}_sum")
+
+# Spread the data to wide format for proportion
+df_wide_prop <- df_summary %>%
+  select(-sum_value) %>%
+  pivot_wider(names_from = provincia, values_from = proportion, names_glue = "{provincia}_prop")
+
+# Join the two data frames together
+df_final <- df_wide_sum %>%
+  full_join(df_wide_prop, by = "disease")
+
+
+# Get the unique provinces
+provinces <- unique(df_diseases$provincia)
+
+# Manually specify the column order
+column_order <- c("disease", sort(c(paste0(provinces, "_prop"), paste0(provinces, "_sum"))))
+
+# Reorder the columns
+df_final <- df_final[, column_order]
+
+df_final <- df_final %>% 
+  adorn_totals("row")
+
+library(purrr)
+
+# Create a new column that is the sum of all columns ending with "_sum"
+df_final <- df_final %>%
+  mutate(total_sum = select(., ends_with("_sum")) %>% 
+           reduce(`+`))
+
+
 # Save image ####
 save.image (file = "code/my_work_space.RData")

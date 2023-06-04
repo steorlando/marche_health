@@ -1,6 +1,8 @@
 ---
 title: "Primo report"
-output: word_document
+output: 
+  word_document: 
+    reference_docx: reference.docx
 date: "`r Sys.Date()`"
 ---
 
@@ -32,6 +34,8 @@ std_border <- fp_border(color = "grey", style = "solid", width = 1 )
 
 db_map1 <- db_map %>%
   filter(popolazione > 2000)
+
+# Sys.setlocale("LC_NUMERIC", "it_IT")
 
 ```
 
@@ -310,11 +314,11 @@ L'RSA è un servizio territoriale ma non domiciliare. anche in questo caso si tr
 
 La mappa seguente riporta la spesa totale per RSA, e il numero totale di anziani assisti per comune.
 
-Le tabelle i 15 comuni che spendono rispettivamente di più  e di meno per anziano per questo servizio.
+Le tabelle i 15 comuni che spendono rispettivamente di più e di meno per anziano per questo servizio.
 
 Bisogna tener presente che `r sum(db$rsa_utenti == 0)` su `r nrow(db)` comuni non hanno alcun utente in RSA (ad esempio il comune di Macerata), e sono stati esclusi dalla tabella, ma meritano una analisi specifica.
 
-```{r mappa_rsa}
+```{r mappa_rsa , dpi=300, fig.width=5.5, fig.height= 5.5}
 tmap_mode("plot")
 tm_shape(db_map1) + # il database con i dati
   tm_polygons("rsa_spesa_tot", # il dato da mappare
@@ -357,20 +361,17 @@ tab <- set_header_labels(tab,
                                  rsa_spesa_utente = "Spesa RSA per utente",
                          over65 = "N. anziani (over 65)")
 
-
-tab
 # Autofit the table
 tab <- autofit(tab)
 
 #Add the caption
-tab <- set_caption(tab, caption = "Top 10 comuni per utenti SAD su popolazione over 65")
+tab <- set_caption(tab, caption = "Top 15 comuni per spesa RSA per anziano")
 
 
 # Print the result
 tab
 
 ```
-
 
 ```{r tab_rsa_less}
 tab <- flextable(rsa_spesa_less)
@@ -400,14 +401,25 @@ tab
 tab <- autofit(tab)
 
 #Add the caption
-tab <- set_caption(tab, caption = "Top 10 comuni per utenti SAD su popolazione over 65")
+tab <- set_caption(tab, caption = "Top 15 comuni per minor spesa RSA per anziano")
 
 
 # Print the result
 tab
 ```
 
-
 ### Commenti
 
 [EXP] commentare che bisogna interpretare correttamente questi dati. La spesa alta o bassa non è necessariamente un problema. A volte si spende poco perchè si stanza poco, ma non suggeriamo che si deba spendere più o meno, ma spendere meglio, inserendo le RSA all'interno del continuum assistenziale, aumentandone l'accesso quando ci sono situazioni critiche che richiedono ricoveri lunghi, e diminuendo gli utenti che vi entrano a vita anche quando potrebbero essere curati a casa.
+
+## Consumo risorse ospedaliere
+
+[EXP] Spiegare come abbiamo calcolato il numero di ricoveri associati a NCD (il fatto dei creg)
+
+Dire che questo dato è importante perché di dice quanti ricoveri sono associati a NCDs che sono
+
+-   Prevenibili con interventi socio-sanitari
+
+-   Trattabili sul territorio invece che in ospedale
+
+La tabella seguente riporta i ricoveri associati alle principali patologie per provincia, e la proporzione di questi ricoveri sul totale dei ricoveri

@@ -28,6 +28,9 @@ pacman::p_load(magrittr,      # Pipes
 
 rm(list = ls())
 
+#Sys.setlocale("LC_NUMERIC", "it_IT")
+
+
 
 source(here::here("code","06_funzioni_per_mappe.R")) # ci lavora stefano
 source(here::here("code","03b_dati_demografici.R"))
@@ -38,5 +41,7 @@ source(here::here("code","10_dati_report.R"))
 
 
 # Save image ####
-save.image (file = "code/my_work_space.RData")
+#save.image (file = "code/my_work_space.RData")
+
+#Sys.setlocale("LC_NUMERIC", "C") # quando faccio il report lo cambio in italiano. Questo è per tornare all'inglese. 
 
