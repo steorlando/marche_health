@@ -150,7 +150,7 @@ tab
 
 ## Servizi domiciliari
 
-Mariagrazia: aggiungere la spesa totale per SAD e ADI divisa tra carico stato, regione, utenti In totale nella regione per il servizio ADI si è speso `r sum(db$sad_spesa_tot)` di cui X a carico del Servizio Sanitario ....
+Mariagrazia: aggiungere la spesa totale per SAD e ADI divisa tra carico stato, regione, utenti. In totale nella regione per il servizio SAD si è speso `r sum(db$sad_spesa_tot)`,  di cui `r sum(db$sad_spesa_ssn)`  a carico del Servizio Sanitario, `r sum(db$sad_spesanetta)` a carico della regine e `r sum(db$sad_spesa_utenti)` a carico dei cittadini. In totale nella regione per il servizio ADI si è speso `r sum(db$adi_spesa_tot)`, di cui `r sum(db$adi_spesa_ssn)` a carico del Sistema Sanitario, `r sum(db$adi_spesanetta)` a carico della regione e `r sum(db$adi_spesa_utendi)` a carico dei cittadini.
 
 Bisogna tener presente che `r sum(db$sad_utenti == 0)` su `r nrow(db)` non hanno alcun utente in SAD, e sono stati esclusi dalla tabella.
 
@@ -277,7 +277,7 @@ tab
 
 ## Spsa per RSA (Residenza Sanitaria Assistenziale)
 
-Mariagrazia: Inserire spesa totale nella regione a carico di SSN, regione, cittadini
+Mariagrazia: In totale nella regione per i servizi di RSA sono stati spesi `r sum(db$rsa_spesa_tot)`, di cui `r sum(db$rsa_spesa_ssn)` a carico del Sistema Sanitario, `r sum(db$rsa_spesanetta)` a carico della regione e `r sum(db$rsa_spesa_utenti)` a carico dei cittadini.
 
 Bisogna tener presente che `r sum(db$rsa_utenti == 0)` su `r nrow(db)` comuni non hanno alcun utente in RSA (ad esempio il comune di Macerata), e sono stati esclusi dalla tabella, ma meritano una analisi specifica.
 

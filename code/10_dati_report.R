@@ -196,6 +196,15 @@ df_final <- df_final %>%
 # Mariagrazia: tabella per malattia con numero ricoveri, proporzione sui ricoveri totali, 
 #numero giorni, proporzione su giorni totali, costo generato, proporzione costo totale
 
+db_tab <- db %>%
+  select(c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", "demenze", "irc_non_dialitica",
+           "ricoveri_totali", "ipertensione_d", "ipo_iper_tiroidismo_d", "asma_d", "bpco_d", "diabete_d", "diabete_complicato_d", "cardiopatia_ischemica_d", "scompenso_cardiaco_d",
+           "demenze_d", "irc_non_dialitica_d","ricoveri_totali_d", "ipertensione_c", "ipo_iper_tiroidismo_c", "asma_c", "bpco_c", "diabete_c", "diabete_complicato_c", 
+           "cardiopatia_ischemica_c", "scompenso_cardiaco_c", "demenze_c", "irc_non_dialitica_c", "ricoveri_totali_c")) 
+
+
+
+
 # Comuni che si discostano dalla regressione
 
 resid_plus <- db_resid_multi %>%

@@ -1,7 +1,7 @@
 # Codice per aggiungere al databse per comen (db) i dati sulle patologie presi dalle SDO
 
 #Creo variabili con num sogg ricoverati per comune per patologia
-sintesi_sdo <- import("data/SINTESI_SDO_2019.xlsx") %>% 
+sintesi_sdo <- import("data/SINTESI_SDO_2019.xlsx", sheet = "Sintesi") %>% 
   clean_names()
 
 library(dplyr)
@@ -26,8 +26,50 @@ risultati_somma <- somma(sintesi_sdo, variabili)
 db <- left_join(db, risultati_somma, by = "cod_istat", all.x = T)
 
 
+
 # Mariagrazia: aggiungere importazione dagli altri due sheets
-# le patologie si chiamano con suffisso "_d" per i giorni di degenza e "_c" per il costo
+# le patologie si chiamano con suffisso "_d" 
+
+degenze <- import("data/SINTESI_SDO_2019.xlsx", sheet = "Degenza") %>% 
+                    clean_names()
+degenze <- degenze %>%
+  rename(cod_istat = comresid)
+
+colonne_carattere <- sapply(degenze, is.character)
+degenze[colonne_carattere] <- lapply(degenze[colonne_carattere], as.numeric)
+
+somma_d <- function(degenze, variabili) {
+  risultati <- aggregate(degenze[ ,variabili], by = list(degenze$cod_istat), FUN = sum)
+  colnames(risultati)[1] <- "cod_istat"
+  return(risultati)
+}
+
+risultati_d <- somma(degenze, variabili)
+risultati_d$cod_istat <- as.character(risultati_d$cod_istat)
+
+db <- left_join(db, risultati_d, by = "cod_istat", suffix = c("", "_d"))
+
+
+#per i giorni di degenza e "_c" per il costo
+costi <- import("data/SINTESI_SDO_2019.xlsx", sheet = "Valore") %>% 
+  clean_names()
+costi <- costi %>%
+  rename(cod_istat = comresid)
+
+carattere <- sapply(costi, is.character)
+costi[carattere] <- lapply(costi[carattere], as.numeric)
+
+
+somma_c <- function(costi, variabili) {
+  risultati <- aggregate(costi[ ,variabili], by = list(costi$cod_istat), FUN = sum)
+  colnames(risultati)[1] <- "cod_istat"
+  return(risultati)
+}
+
+risultati_c <- somma(costi, variabili)
+risultati_c$cod_istat <- as.character(risultati_c$cod_istat)
+
+db <- left_join(db, risultati_c, by = "cod_istat", suffix = c("", "_c"))
 
 
 # Calcolo variabili aggregate
@@ -40,6 +82,8 @@ db <- db %>%
          perc_ricoveri = ricoveri_pat / ricoveri_totali)
 
 # Mariagrazia: fare il calcolo qui sopra anche per le patologie espresse in giorni di degenza e valore, non solo numero ricoveri
+
+
 
 # Aggiungo i daily weight
 
