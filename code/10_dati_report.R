@@ -193,6 +193,9 @@ df_final <- df_final %>%
   mutate(total_sum = select(., ends_with("_sum")) %>% 
            reduce(`+`))
 
+# Mariagrazia: tabella per malattia con numero ricoveri, proporzione sui ricoveri totali, 
+#numero giorni, proporzione su giorni totali, costo generato, proporzione costo totale
+
 # Comuni che si discostano dalla regressione
 
 resid_plus <- db_resid_multi %>%

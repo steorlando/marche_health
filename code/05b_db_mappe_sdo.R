@@ -26,6 +26,9 @@ risultati_somma <- somma(sintesi_sdo, variabili)
 db <- left_join(db, risultati_somma, by = "cod_istat", all.x = T)
 
 
+# Mariagrazia: aggiungere importazione dagli altri due sheets
+# le patologie si chiamano con suffisso "_d" per i giorni di degenza e "_c" per il costo
+
 
 # Calcolo variabili aggregate
 db <- db %>% 
@@ -35,6 +38,8 @@ db <- db %>%
            scompenso_cardiaco+ demenze+              
            irc_non_dialitica,
          perc_ricoveri = ricoveri_pat / ricoveri_totali)
+
+# Mariagrazia: fare il calcolo qui sopra anche per le patologie espresse in giorni di degenza e valore, non solo numero ricoveri
 
 # Aggiungo i daily weight
 

@@ -1,0 +1,569 @@
+---
+title: "Primo report"
+output: 
+  word_document: 
+    reference_docx: reference.docx
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = F, warning = F, ft.align = "left", ft.keepnext = F)
+load("my_work_space.RData")
+
+library(tidyverse)
+library(magrittr)
+library(officer)
+library(flextable)
+library(ggplot2)
+library(scales)
+library(janitor)
+library(here)
+library(lubridate)
+library(gtsummary)
+library(tmap)
+
+set_flextable_defaults(font.size = 9,
+                       table.layout = "autofit",
+                       theme_fun = "theme_booktabs",
+                       padding.bottom = 1,
+                       padding.right = 5
+                       )
+
+std_border <- fp_border(color = "grey", style = "solid", width = 1 )
+
+db_map1 <- db_map %>%
+  filter(popolazione > 2000)
+
+db1 <- db %>% 
+  filter(popolazione > 2000)
+
+# Sys.setlocale("LC_NUMERIC", "it_IT")
+
+```
+
+Nelle marche ci sono `r formatC(tot_popolazione, big.mark=".")` residenti distribuiti su `r nrow(db)` comuni con una popolazione media di `r formatC(media_comune, big.mark=".", decimal.mark=",")` persone a comune. In totale `r n_2000` hanno meno di 2.000 abitanti.
+
+## Numero di residenti con più di 65 anni
+
+```{r mappa_over65, dpi=300, fig.width=5}
+
+tmap_mode("plot")
+tm_shape(db_map1) + # il database con i dati
+  tm_polygons("over65", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Popolazione > 65 anni",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per numero di anziani", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+
+```
+
+```{r tabella_over65}
+
+# Create a FlexTable object
+tab <- flextable(com_anziani)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "perc_65",
+                       value = as_paragraph(percent(perc_65, accuracy = 0.1)))
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 popolazione = "Popolazione Totale", 
+                                 over65 = "Anziani over 65", 
+                                 perc_65 = "Percentuale Over 65")
+
+
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 15 comuni con la popolazione over 65 più alta")
+
+
+# Print the result
+tab
+
+```
+
+### Percentuale di residenti con più di 65 anni
+
+```{r mappa_over65_perc, dpi=300, fig.width=5}
+tmap_mode("plot")
+tm_shape(db_map1) + # il database con i dati
+  tm_polygons("perc_65", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "% anziani con più di 65 anni",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per % di anziani", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+
+```
+
+```{r tab_proporzione_anziani}
+# Create a FlexTable object
+tab <- flextable(perc_anziani)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "perc_65",
+                       value = as_paragraph(percent(perc_65, accuracy = 0.1)))
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 popolazione = "Popolazione Totale", 
+                                 over65 = "Anziani over 65", 
+                                 perc_65 = "Percentuale Over 65")
+
+
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 15 comuni con la percentuale di over 65 più alta")
+
+
+# Print the result
+tab
+```
+
+## Servizi domiciliari
+
+Mariagrazia: aggiungere la spesa totale per SAD e ADI divisa tra carico stato, regione, utenti In totale nella regione per il servizio ADI si è speso `r sum(db$sad_spesa_tot)` di cui X a carico del Servizio Sanitario ....
+
+Bisogna tener presente che `r sum(db$sad_utenti == 0)` su `r nrow(db)` non hanno alcun utente in SAD, e sono stati esclusi dalla tabella.
+
+```{r mappa_adi_sad, dpi=300, fig.width=7, fig.height= 7}
+tmap_mode("plot")
+tm_shape(db_map1) + # il database con i dati
+  tm_polygons("sad_utenti", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Numero utenti in SAD",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(db_map1) +
+    tm_bubbles("over65", col = "red" , size = "over65", scale = 1, alpha = 0.5, style = "pretty", legend.size.show = F) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per numero di utenti SAD", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+```
+
+```{r mappa_adi, dpi=300, fig.width=7, fig.height= 7}
+library(RColorBrewer)
+
+# create color palette
+n <- 100 # the number of colors to be in the palette
+palette <- colorRampPalette(c("white", brewer.pal(8, "Blues")))(n)
+
+# Define breaks
+breaks <- seq(0, max(db_map1$adi_utenti), length.out = n)
+
+tmap_mode("plot")
+tm_shape(db_map1) + 
+  tm_polygons("adi_utenti", 
+              style = "pretty", 
+              palette = palette, 
+              breaks = breaks, 
+              title = "Numero utenti in ADI",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(db_map1) +
+  tm_bubbles("over65", col = "red" , size = "over65", scale = 1, alpha = 0.5, style = "pretty" , legend.size.show = F) +
+  tm_shape(italy_province) + 
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + 
+  tm_layout(main.title = "Comuni per numero di utenti ADI", main.title.size = 0.8,
+            legend.title.size = 0.8,
+            legend.position = c("left", "bottom"))
+
+```
+
+```{r tab_prop_sad}
+# Create a FlexTable object
+tab <- flextable(perc_sad)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "sad_spesa_utente",
+                       value = as_paragraph(floor(sad_spesa_utente))) 
+tab <-  compose(tab, 
+                       j = "sad_spesa_anziano",
+                       value = as_paragraph(floor(sad_spesa_anziano)))
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 sad_utenti = "Utenti SAD", 
+                                 sad_spesa_tot = "Spesa per SAD", 
+                                 sad_spesa_anziano = "Spesa SAD per anziano",
+                                 sad_spesa_utente = "Spesa SAD per utente",
+                         over65 = "N. anziani (over 65)")
+
+
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 10 comuni per utenti SAD su popolazione over 65")
+
+
+# Print the result
+tab
+```
+
+```{r tab_propo_sad_less}
+tab <- flextable(perc_sad_less)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "sad_spesa_utente",
+                       value = as_paragraph(floor(sad_spesa_utente))) 
+
+tab <-  compose(tab, 
+                       j = "sad_spesa_anziano",
+                       value = as_paragraph(floor(sad_spesa_anziano)))
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 sad_utenti = "Utenti SAD", 
+                                 sad_spesa_tot = "Spesa per SAD", 
+                                 sad_spesa_anziano = "Spesa SAD per anziano",
+                                 sad_spesa_utente = "Spesa SAD per utente",
+                         over65 = "N. anziani (over 65)")
+
+
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 10 comuni per utenti SAD su popolazione over 65")
+
+
+# Print the result
+tab
+```
+
+
+## Spsa per RSA (Residenza Sanitaria Assistenziale)
+
+Mariagrazia: Inserire spesa totale nella regione a carico di SSN, regione, cittadini
+
+Bisogna tener presente che `r sum(db$rsa_utenti == 0)` su `r nrow(db)` comuni non hanno alcun utente in RSA (ad esempio il comune di Macerata), e sono stati esclusi dalla tabella, ma meritano una analisi specifica.
+
+```{r mappa_rsa , dpi=300, fig.width=5.5, fig.height= 5.5}
+tmap_mode("plot")
+tm_shape(db_map1) + # il database con i dati
+  tm_polygons("rsa_spesa_tot", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Spesa totale per RSA",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(db_map1) +
+    tm_bubbles("rsa_utenti", col = "red" , size = "rsa_utenti", scale = 1, alpha = 0.5, style = "pretty", legend.size.show = F) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per spesa totale RSA e numero utenti", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+
+```
+
+```{r tab_rsa}
+tab <- flextable(rsa_spesa)
+
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "rsa_spesa_utente",
+                       value = as_paragraph(floor(rsa_spesa_utente))) 
+
+tab <-  compose(tab, 
+                       j = "rsa_spesa_anziano",
+                       value = as_paragraph(floor(rsa_spesa_anziano)))
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 rsa_utenti = "Utenti RSA", 
+                                 rsa_spesa_tot = "Spesa totale per RSA", 
+                                 rsa_spesa_anziano = "Spesa RSA per anziano",
+                                 rsa_spesa_utente = "Spesa RSA per utente",
+                         over65 = "N. anziani (over 65)")
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 15 comuni per spesa RSA per anziano")
+
+
+# Print the result
+tab
+
+```
+
+```{r tab_rsa_less}
+tab <- flextable(rsa_spesa_less)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "rsa_spesa_utente",
+                       value = as_paragraph(round(rsa_spesa_utente, digits= 2))) 
+
+tab <-  compose(tab, 
+                       j = "rsa_spesa_anziano",
+                       value = as_paragraph(round(rsa_spesa_anziano, digits= 2)))
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 rsa_utenti = "Utenti RSA", 
+                                 rsa_spesa_tot = "Spesa totale per RSA", 
+                                 rsa_spesa_anziano = "Spesa RSA per anziano",
+                                 rsa_spesa_utente = "Spesa RSA per utente",
+                         over65 = "N. anziani (over 65)")
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 15 comuni per minor spesa RSA per anziano")
+
+# Print the result
+tab
+```
+
+
+
+## Consumo risorse ospedaliere
+
+Mariagrazia: rifare la tabella togliendo il dato per provincia ma aggiunggendo il burden di malattia anche in termini di giorni e di valori
+
+```{r tab_malattie_provincia}
+tab <- flextable(df_final)
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         disease = "Malattia",
+                         total_sum = "Totale Malattia"
+                                 )
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Numero di ricoveri in un anno associati alle principali malattie croniche non trasmissibili (NCDs)")
+
+# Print the result
+tab
+
+```
+
+[EXP] fare un piccolo discorso su ciascuna patologia (problematica, possibili azioni per prevenirla, ritardarla, o ritardarne gli esiti più gravi (e quindi più costosi)
+
+La mappa seguente mostra la distribuzioni dei ricoveri legati alle NCDs. Il colore indica il peso in proporzione sul totale dei ricoveri, e le bubbles il numero assoluto di ricoveri in un anno associati a queste malattie.
+
+```{r map_ncds, dpi=300, fig.width=7, fig.height= 7}
+tmap_mode("plot")
+tm_shape(db_map1) + # il database con i dati
+  tm_polygons("perc_ricoveri", # il dato da mappare
+              style = "pretty", # capire quale sia lo stile migliore
+              palette = "Blues", # la scala di colori
+              title = "Proporzione di ricoveri associati a NCDs",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(db_map1) +
+    tm_bubbles("ricoveri_pat", col = "red" , size = "ricoveri_pat", scale = 1, alpha = 0.5, style = "pretty", legend.size.show = F) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per domanda di servizi ospedalieri associati a NCDs", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+
+```
+
+I comuni più grandi certamente generano la maggiore domanda di questi servizi. In questi comuni sarebbe opportuno implementare servizi di prevenzione per ridurre questa domanda, e servizi domiciliari/territoriali per ritardare gli esiti più gravi, e non dover ricorrere all'ospedale, generando
+
+-   costi maggiori
+
+-   peggiore qualità della vita dei pazienti
+
+-   disagi per tutti i pazienti affetti da altre patologie che risentono dell'intasamento di pronto soccorso, reparti, e quindi lunghe liste di attesa per la cira di patologie che necessitano dell'ospedale
+
+La domanda di questi servizi è certamente associato all'età, ovvero alla percentuale di anziani nei comuni.
+
+Il grafico seguente mostra la correlazione tra percentuale di anziani e percentuale di ricoveri associati a NCDs per comune e la tabella seguente mostra il risultato di una regressione lineare che include anche il reddito medio per comune (altra variabile che potrebbe essere associata ad un peggiore stato di salute.
+
+```{r graf_regressione_ricoveri_anziani, dpi=300}
+ggplot(db1, aes(x=perc_65, y=perc_ricoveri)) + 
+  geom_point() + 
+  geom_smooth(method=lm, se=TRUE, color="red", fill="pink") + # Aggiunge una linea di regressione con intervallo di confidenza
+  theme_minimal() +
+  labs(x = "Percentuale di persone over 65", y = "Percentuale di ricoveri per NCDs",
+       title = "Scatter plot con linea di regressione")
+
+
+```
+
+```{r regressione}
+
+db1 <- db1 %>% 
+  mutate(reddito_adj = reddito_2019/100)
+
+# esegui la regressione lineare multivariabile
+model_multi <- lm(perc_ricoveri ~ perc_65 + reddito_adj, data = db1)
+
+# crea una lista di etichette per le variabili
+label_list <- c("perc_65" = "Percentuale di over 65", "reddito_adj" = "Reddito medio comune")
+
+# crea la tabella di regressione
+tbl_regression(model_multi, label = label_list) %>% 
+  add_glance_source_note(    
+    include = c(r.squared, adj.r.squared, AIC, nobs)
+  )
+
+# ottieni un riepilogo del modello
+summary_model_multi <- summary(model_multi)
+
+
+
+```
+
+Come si può vedere, sebbene le due variabili siano collegate, il modello spiega solo il `r percent(summary_model_multi$r.squared, accuracy = 0.1)` della variabilità. In altre parole ci sono molti altri fattori correlati alla domanda di servizi ospedalieri legati a queste patolofie su cui si può intervenire per ridurla.
+
+Le tabelle seguenti mostrano i comuni che si discostano maggiormente dal valore atteso in positivo e in negativo.
+
+I primi sono quelli che a parità di anziani hanno più ricoveri, quindi dove c'è più bisogno di intervenire con prevenzione e sevizi territoriali/domiciliari.
+
+I secondi, al contrario, sono quelli che a parità di anziani generano meno ricoveri, e sarebbe interessante vedere quali potrebbero essere le cause del minor accesso all'ospedale (migliore salute? Migliori servizi?)
+
+La mappa mostra questi comuni rispettivamente in rosso e in verde
+
+```{r tab_comuni_malati}
+tab <- resid_plus %>% select(-cod_istat)
+tab <- flextable(tab)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "perc_ricoveri",
+                       value = as_paragraph(percent(perc_ricoveri, accuracy = 0.1))) 
+
+tab <-  compose(tab, 
+                       j = "perc_65",
+                       value = as_paragraph(percent(perc_65, accuracy = 0.1)))
+
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 popolazione = "Popolazione", 
+                                 perc_65 = "% anzianiover 65", 
+                                 ricoveri_pat = "N. ricoveri per NCDs",
+                                 perc_ricoveri = "% rioveri NCDs su totale ricoveri",
+                         over65 = "N. anziani (over 65)")
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 15 comuni ricoveri NCDs a parità di anziani")
+
+# Print the result
+tab
+
+```
+
+```{r tab_comuni_sani}
+tab <- resid_less %>% select(-cod_istat)
+tab <- flextable(tab)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "perc_ricoveri",
+                       value = as_paragraph(percent(perc_ricoveri, accuracy = 0.1))) 
+
+tab <-  compose(tab, 
+                       j = "perc_65",
+                       value = as_paragraph(percent(perc_65, accuracy = 0.1)))
+
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 popolazione = "Popolazione", 
+                                 perc_65 = "% anzianiover 65", 
+                                 ricoveri_pat = "N. ricoveri per NCDs",
+                                 perc_ricoveri = "% rioveri NCDs su totale ricoveri",
+                         over65 = "N. anziani (over 65)")
+
+# Autofit the table
+tab <- autofit(tab)
+
+#Add the caption
+tab <- set_caption(tab, caption = "Top 15 comuni con meno ricoveri NCDs a parità di anziani")
+
+# Print the result
+tab
+```
+
+```{r mappa_residui, dpi=300, fig.width=5}
+# Factorize your "col" column with custom labels
+db_map_res$col <- factor(db_map_res$col, 
+                         levels = c("red", "green", "Na"), 
+                         labels = c("Più ricoveri", "Meno ricoveri", ""))
+
+tmap_mode("plot")
+tm_shape(db_map_res) + # il database con i dati
+  tm_polygons("col", # il dato da mappare
+              palette = c("red", "green", "white"), # set colors for different categories
+              missing = "white", # set color for NA
+              title = "Comuni con più o meno ricoveri rispetto a valore atteso",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Comuni per ricoveri NCDs", main.title.size = 0.8,
+            legend.title.size = 0.8, # Make the legend title smaller
+            legend.position = c("left", "bottom")) # Reposition the legend
+
+```
