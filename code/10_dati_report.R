@@ -193,15 +193,88 @@ df_final <- df_final %>%
   mutate(total_sum = select(., ends_with("_sum")) %>% 
            reduce(`+`))
 
-# Mariagrazia: tabella per malattia con numero ricoveri, proporzione sui ricoveri totali, 
-#numero giorni, proporzione su giorni totali, costo generato, proporzione costo totale
+# Elenco ricoveri per patologia con giorni e costi ####
 
-db_tab <- db %>%
-  select(c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", "demenze", "irc_non_dialitica",
-           "ricoveri_totali", "ipertensione_d", "ipo_iper_tiroidismo_d", "asma_d", "bpco_d", "diabete_d", "diabete_complicato_d", "cardiopatia_ischemica_d", "scompenso_cardiaco_d",
-           "demenze_d", "irc_non_dialitica_d","ricoveri_totali_d", "ipertensione_c", "ipo_iper_tiroidismo_c", "asma_c", "bpco_c", "diabete_c", "diabete_complicato_c", 
-           "cardiopatia_ischemica_c", "scompenso_cardiaco_c", "demenze_c", "irc_non_dialitica_c", "ricoveri_totali_c")) 
+# List of diseases
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
+              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
+              "demenze", "irc_non_dialitica")
 
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(all_of(diseases))
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by disease
+df_summary <- df_long %>%
+  group_by(disease) %>%
+  summarise(ricoveri = sum(value, na.rm = TRUE))
+
+altre_patologie <- sum(db$ricoveri_totali) - sum(df_summary$ricoveri)
+
+new_row <- data.frame(disease = "altre_patologie", ricoveri = altre_patologie)
+df_summary <- rbind(df_summary, new_row)
+
+## Elenco giorni di degenza per patologia  ####
+
+# List of diseases
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(ends_with("_d"))
+
+names(df_diseases) <- sub("_d$", "", names(df_diseases))
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by disease
+df_summary_d <- df_long %>%
+  group_by(disease) %>%
+  summarise(giorni_degenza = sum(value, na.rm = TRUE))
+
+sum(db$ricoveri_totali_d)
+
+altre_patologie <- sum(db$ricoveri_totali_d) - sum(df_summary_d$giorni_degenza)
+new_row <- data.frame(disease = "altre_patologie", giorni_degenza = altre_patologie)
+df_summary_d <- rbind(df_summary_d, new_row)
+
+## Elenco costo ricoveri per patologia  ####
+
+# List of diseases
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(ends_with("_c"))
+
+names(df_diseases) <- sub("_c$", "", names(df_diseases))
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by disease
+df_summary_c <- df_long %>%
+  group_by(disease) %>%
+  summarise(costo_ricoveri = sum(value, na.rm = TRUE))
+
+altre_patologie <- sum(db$ricoveri_totali_c) - sum(df_summary_c$costo_ricoveri)
+new_row <- data.frame(disease = "altre_patologie", costo_ricoveri = altre_patologie)
+df_summary_c <- rbind(df_summary_c, new_row)
+
+malattie <- left_join(df_summary, df_summary_d)
+malattie <- left_join(malattie, df_summary_c)
+
+malattie <- malattie %>% 
+  mutate(giorni_degenza = round(giorni_degenza, digits = 0),
+         costo_ricoveri = round(costo_ricoveri, digits = 0)) %>% 
+  adorn_totals(where = c("row")) %>% 
+  adorn_percentages(denominator = "col") %>% 
+  adorn_pct_formatting(digits = 3) %>% 
+  adorn_ns(position = "front") %>% 
+  print()
 
 
 

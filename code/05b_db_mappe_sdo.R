@@ -26,17 +26,12 @@ risultati_somma <- somma(sintesi_sdo, variabili)
 db <- left_join(db, risultati_somma, by = "cod_istat", all.x = T)
 
 
-
-# Mariagrazia: aggiungere importazione dagli altri due sheets
-# le patologie si chiamano con suffisso "_d" 
-
 degenze <- import("data/SINTESI_SDO_2019.xlsx", sheet = "Degenza") %>% 
                     clean_names()
 degenze <- degenze %>%
   rename(cod_istat = comresid)
 
-colonne_carattere <- sapply(degenze, is.character)
-degenze[colonne_carattere] <- lapply(degenze[colonne_carattere], as.numeric)
+degenze <- degenze %>% mutate_at(vars(-cod_istat), function(x) ifelse(x=="." , 0, as.numeric(x)))
 
 somma_d <- function(degenze, variabili) {
   risultati <- aggregate(degenze[ ,variabili], by = list(degenze$cod_istat), FUN = sum)
@@ -45,7 +40,6 @@ somma_d <- function(degenze, variabili) {
 }
 
 risultati_d <- somma(degenze, variabili)
-risultati_d$cod_istat <- as.character(risultati_d$cod_istat)
 
 db <- left_join(db, risultati_d, by = "cod_istat", suffix = c("", "_d"))
 
@@ -56,8 +50,7 @@ costi <- import("data/SINTESI_SDO_2019.xlsx", sheet = "Valore") %>%
 costi <- costi %>%
   rename(cod_istat = comresid)
 
-carattere <- sapply(costi, is.character)
-costi[carattere] <- lapply(costi[carattere], as.numeric)
+costi <- costi %>% mutate_at(vars(-cod_istat), function(x) ifelse(x=="." , 0, as.numeric(x)))
 
 
 somma_c <- function(costi, variabili) {
@@ -67,7 +60,6 @@ somma_c <- function(costi, variabili) {
 }
 
 risultati_c <- somma(costi, variabili)
-risultati_c$cod_istat <- as.character(risultati_c$cod_istat)
 
 db <- left_join(db, risultati_c, by = "cod_istat", suffix = c("", "_c"))
 
@@ -81,7 +73,12 @@ db <- db %>%
            irc_non_dialitica,
          perc_ricoveri = ricoveri_pat / ricoveri_totali)
 
-# Mariagrazia: fare il calcolo qui sopra anche per le patologie espresse in giorni di degenza e valore, non solo numero ricoveri
+db <- db %>% 
+  mutate(ricoveri_pat_d = rowSums(select(., ends_with("_d"))),
+         perc_ricoveri_d = ricoveri_pat_d / ricoveri_totali_d,
+         ricoveri_pat_c = rowSums(select(., ends_with("_c"))),
+         perc_ricoveri_c = ricoveri_pat_c / ricoveri_totali_c
+         )
 
 
 

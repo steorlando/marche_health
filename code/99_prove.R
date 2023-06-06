@@ -516,3 +516,152 @@ tm_shape(db_map_res) + # il database con i dati
   tm_layout(main.title = "Comuni per numero di anziani", main.title.size = 0.8,
             legend.title.size = 0.8, # Make the legend title smaller
             legend.position = c("left", "bottom")) # Reposition the legend
+
+# tabella delle patologie con ricoveri, giorni di degenza, e costo ####
+
+## Elenco ricoveri per patologia  ####
+
+# List of diseases
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
+              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
+              "demenze", "irc_non_dialitica")
+
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(all_of(diseases), ricoveri_totali)
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by disease
+df_summary <- df_long %>%
+  group_by(disease) %>%
+  summarise(ricoveri = sum(value, na.rm = TRUE), 
+            prop_ricoveri = ricoveri / sum(ricoveri_totali, na.rm = TRUE))
+
+
+## Elenco giorni di degenza per patologia  ####
+
+# List of diseases
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(ends_with("_d"))
+
+names(df_diseases) <- sub("_d$", "", names(df_diseases))
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by disease
+df_summary_d <- df_long %>%
+  group_by(disease) %>%
+  summarise(giorni_degenza = sum(value, na.rm = TRUE), 
+            prop_giorni = giorni_degenza / sum(ricoveri_totali, na.rm = TRUE))
+
+## Elenco costo ricoveri per patologia  ####
+
+# List of diseases
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(ends_with("_c"))
+
+names(df_diseases) <- sub("_c$", "", names(df_diseases))
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by disease
+df_summary_c <- df_long %>%
+  group_by(disease) %>%
+  summarise(costo_ricoveri = sum(value, na.rm = TRUE), 
+            prop_costo = costo_ricoveri / sum(ricoveri_totali, na.rm = TRUE))
+
+# Seconda tabella delle patologie con ricoveri, giorni di degenza, e costo ####
+
+## Elenco ricoveri per patologia  ####
+
+# List of diseases
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
+              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
+              "demenze", "irc_non_dialitica")
+
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(all_of(diseases))
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by disease
+df_summary <- df_long %>%
+  group_by(disease) %>%
+  summarise(ricoveri = sum(value, na.rm = TRUE))
+
+altre_patologie <- sum(db$ricoveri_totali) - sum(df_summary$ricoveri)
+
+new_row <- data.frame(disease = "altre_patologie", ricoveri = altre_patologie)
+df_summary <- rbind(df_summary, new_row)
+
+## Elenco giorni di degenza per patologia  ####
+
+# List of diseases
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(ends_with("_d"))
+
+names(df_diseases) <- sub("_d$", "", names(df_diseases))
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by disease
+df_summary_d <- df_long %>%
+  group_by(disease) %>%
+  summarise(giorni_degenza = sum(value, na.rm = TRUE))
+
+sum(db$ricoveri_totali_d)
+
+altre_patologie <- sum(db$ricoveri_totali_d) - sum(df_summary_d$giorni_degenza)
+new_row <- data.frame(disease = "altre_patologie", giorni_degenza = altre_patologie)
+df_summary_d <- rbind(df_summary_d, new_row)
+
+## Elenco costo ricoveri per patologia  ####
+
+# List of diseases
+# Create a new dataframe with only the necessary columns
+df_diseases <- db %>%
+  select(ends_with("_c"))
+
+names(df_diseases) <- sub("_c$", "", names(df_diseases))
+
+# Gather the diseases into a single column
+df_long <- df_diseases %>%
+  pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
+
+# Summarize the data by disease
+df_summary_c <- df_long %>%
+  group_by(disease) %>%
+  summarise(costo_ricoveri = sum(value, na.rm = TRUE))
+
+altre_patologie <- sum(db$ricoveri_totali_c) - sum(df_summary_c$costo_ricoveri)
+new_row <- data.frame(disease = "altre_patologie", costo_ricoveri = altre_patologie)
+df_summary_c <- rbind(df_summary_c, new_row)
+
+malattie <- left_join(df_summary, df_summary_d)
+malattie <- left_join(malattie, df_summary_c)
+
+malattie <- malattie %>% 
+  mutate(giorni_degenza = round(giorni_degenza, digits = 0),
+         costo_ricoveri = round(costo_ricoveri, digits = 0)) %>% 
+  adorn_totals(where = c("row")) %>% 
+  adorn_percentages(denominator = "col") %>% 
+  adorn_pct_formatting(digits = 3) %>% 
+  adorn_ns(position = "front") %>% 
+  print()
+  
+  

@@ -374,12 +374,14 @@ tab
 Mariagrazia: rifare la tabella togliendo il dato per provincia ma aggiunggendo il burden di malattia anche in termini di giorni e di valori
 
 ```{r tab_malattie_provincia}
-tab <- flextable(df_final)
+tab <- flextable(malattie)
 
 # Modify the header names
 tab <- set_header_labels(tab, 
                          disease = "Malattia",
-                         total_sum = "Totale Malattia"
+                         ricoveri = "Numero di ricoveri",
+                         giorni_degenza = "Giorni di degenza generati",
+                         costo_ricoveri = "Costo dei ricoveri"
                                  )
 
 # Autofit the table
@@ -393,9 +395,6 @@ tab
 
 ```
 
-[EXP] fare un piccolo discorso su ciascuna patologia (problematica, possibili azioni per prevenirla, ritardarla, o ritardarne gli esiti più gravi (e quindi più costosi)
-
-La mappa seguente mostra la distribuzioni dei ricoveri legati alle NCDs. Il colore indica il peso in proporzione sul totale dei ricoveri, e le bubbles il numero assoluto di ricoveri in un anno associati a queste malattie.
 
 ```{r map_ncds, dpi=300, fig.width=7, fig.height= 7}
 tmap_mode("plot")
