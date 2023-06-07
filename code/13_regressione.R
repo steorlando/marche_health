@@ -124,3 +124,63 @@ p_resid <- plot(predict(model_multi), residuals(model_multi),
      ylab = "Residuals")
 abline(h = 0, lty = 2)
 
+# Regressione usando costo ricoveri ####
+db_r <- db %>% 
+  filter(popolazione > 2000) %>% 
+  mutate(reddito_adj = reddito_2019/100)
+
+p <- ggplot(db_r, aes(x=perc_65, y=perc_ricoveri_c)) + 
+  geom_point() + 
+  geom_smooth(method=lm, se=TRUE, color="red", fill="pink") + # Aggiunge una linea di regressione con intervallo di confidenza
+  theme_minimal() +
+  labs(x = "Percentuale di persone over 65", y = "Percentuale di spesa per ricoveri NCDs",
+       title = "Scatter plot con linea di regressione")
+p
+
+# esegui la regressione lineare
+model <- lm(perc_ricoveri ~ perc_65, data = db_r)
+
+
+# crea la tabella di riepilogo
+tbl_regression <- tbl_regression(model) %>% 
+  add_glance_source_note(    
+    include = c(r.squared, adj.r.squared, AIC, nobs)
+  )
+
+
+# stampa la tabella
+
+# analisi univariata
+db_r1 <- db_r %>% 
+  dplyr::select(perc_ricoveri_c, perc_65, reddito_adj , totale_stranieri , istruzione_bassa) 
+
+univariata_c <- tbl_uvregression(data = db_r1,
+                               method = lm,
+                               y = perc_ricoveri_c)
+
+# esegui la regressione lineare multivariabile
+model_multi_c <- lm(perc_ricoveri_c ~ perc_65 + reddito_adj, data = db_r1)
+
+tbl_regression_multi_c <- tbl_regression(model_multi_c) %>% 
+  add_glance_source_note(    
+    include = c(r.squared, adj.r.squared, AIC, nobs)
+  )
+
+tbl_regression_multi_c
+
+# Compute the residuals from the model
+resid <- residuals(model_multi_c)
+
+# Add residuals to the original data frame
+db_r_with_resid <- cbind(db_r, resid)
+
+# Sort the data frame by the absolute value of the residuals, in descending order
+db_resid_multi_c <- db_r_with_resid[order(abs(db_r_with_resid$resid), decreasing = TRUE),]
+
+
+library(lmtest)
+bptest(model_multi_c)
+
+library(car)
+ncvTest(model_multi_c)
+

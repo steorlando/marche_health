@@ -1,4 +1,4 @@
-# Codice per aggiungere al databse per comen (db) i dati sulle patologie presi dalle SDO
+# Codice per aggiungere al databse per comune (db) i dati sulle patologie presi dalle SDO ####
 
 #Creo variabili con num sogg ricoverati per comune per patologia
 sintesi_sdo <- import("data/SINTESI_SDO_2019.xlsx", sheet = "Sintesi") %>% 
@@ -26,44 +26,6 @@ risultati_somma <- somma(sintesi_sdo, variabili)
 db <- left_join(db, risultati_somma, by = "cod_istat", all.x = T)
 
 
-degenze <- import("data/SINTESI_SDO_2019.xlsx", sheet = "Degenza") %>% 
-                    clean_names()
-degenze <- degenze %>%
-  rename(cod_istat = comresid)
-
-degenze <- degenze %>% mutate_at(vars(-cod_istat), function(x) ifelse(x=="." , 0, as.numeric(x)))
-
-somma_d <- function(degenze, variabili) {
-  risultati <- aggregate(degenze[ ,variabili], by = list(degenze$cod_istat), FUN = sum)
-  colnames(risultati)[1] <- "cod_istat"
-  return(risultati)
-}
-
-risultati_d <- somma(degenze, variabili)
-
-db <- left_join(db, risultati_d, by = "cod_istat", suffix = c("", "_d"))
-
-
-#per i giorni di degenza e "_c" per il costo
-costi <- import("data/SINTESI_SDO_2019.xlsx", sheet = "Valore") %>% 
-  clean_names()
-costi <- costi %>%
-  rename(cod_istat = comresid)
-
-costi <- costi %>% mutate_at(vars(-cod_istat), function(x) ifelse(x=="." , 0, as.numeric(x)))
-
-
-somma_c <- function(costi, variabili) {
-  risultati <- aggregate(costi[ ,variabili], by = list(costi$cod_istat), FUN = sum)
-  colnames(risultati)[1] <- "cod_istat"
-  return(risultati)
-}
-
-risultati_c <- somma(costi, variabili)
-
-db <- left_join(db, risultati_c, by = "cod_istat", suffix = c("", "_c"))
-
-
 # Calcolo variabili aggregate
 db <- db %>% 
   mutate(ricoveri_pat = ipertensione+ ipo_iper_tiroidismo+ asma+                 
@@ -73,21 +35,14 @@ db <- db %>%
            irc_non_dialitica,
          perc_ricoveri = ricoveri_pat / ricoveri_totali)
 
-db <- db %>% 
-  mutate(ricoveri_pat_d = rowSums(select(., ends_with("_d"))),
-         perc_ricoveri_d = ricoveri_pat_d / ricoveri_totali_d,
-         ricoveri_pat_c = rowSums(select(., ends_with("_c"))),
-         perc_ricoveri_c = ricoveri_pat_c / ricoveri_totali_c
-         )
 
 
-
-# Aggiungo i daily weight
-
+# Aggiungo i DALY weight ####
 dw <- import("data/daly_weight.xlsx")
 
 # Create the diseases and weights dataframes
-diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", "demenze", "irc_non_dialitica")
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", "diabete_complicato", 
+              "cardiopatia_ischemica", "scompenso_cardiaco", "demenze", "irc_non_dialitica")
 
 # Create the new columns in the "db" dataframe
 for (disease in diseases) {
@@ -95,7 +50,6 @@ for (disease in diseases) {
   db[[paste0(disease, "_w")]] <- db[[disease]] * weight
 }
 
-library(dplyr)
 
 # Get the column names with the suffix "_w"
 w_columns <- grep("_w$", names(db), value = TRUE)
@@ -104,4 +58,32 @@ w_columns <- grep("_w$", names(db), value = TRUE)
 db <- db %>% 
   mutate(ricoveri_w = rowSums(select(., all_of(w_columns)))) %>% 
   mutate(perc_ricoveri_w = ricoveri_w/popolazione*10000)
+
+# Aggiungo giorni di degenza e valore rimborsi ricoveri #### 
+deg_val <- import("data/Sintesi_degenze_valore_rev.xlsx")
+
+diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", "diabete_complicato", 
+              "cardiopatia_ischemica", "scompenso_cardiaco", "demenze", "irc_non_dialitica",
+              "ricoveri_totali")
+
+# Create the new columns with degenza in the "db" dataframe
+for (disease in diseases) {
+  degenza <- deg_val$degenza[deg_val$disease == disease]
+  db[[paste0(disease, "_d")]] <- db[[disease]] * degenza
+}
+
+# Create the new columns with "valore" in the "db" dataframe
+for (disease in diseases) {
+  valore <- deg_val$valore[deg_val$disease == disease]
+  db[[paste0(disease, "_c")]] <- db[[disease]] * valore
+}
+
+
+# vedere se mi serve ancora 
+db <- db %>% 
+  mutate(ricoveri_pat_d = rowSums(select(., ends_with("_d"))) - ricoveri_totali_d,
+         perc_ricoveri_d = ricoveri_pat_d / ricoveri_totali_d,
+         ricoveri_pat_c = rowSums(select(., ends_with("_c")))-ricoveri_totali_c,
+         perc_ricoveri_c = ricoveri_pat_c / ricoveri_totali_c
+  )
 

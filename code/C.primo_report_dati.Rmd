@@ -89,7 +89,7 @@ tab <- set_header_labels(tab,
 tab <- autofit(tab)
 
 #Add the caption
-tab <- set_caption(tab, caption = "Top 15 comuni con la popolazione over 65 più alta")
+tab <- set_caption(tab, caption = "Top 15 comuni con la popolazione over 65 più alta in termini assoluti")
 
 
 # Print the result
@@ -141,7 +141,7 @@ tab <- set_header_labels(tab,
 tab <- autofit(tab)
 
 #Add the caption
-tab <- set_caption(tab, caption = "Top 15 comuni con la percentuale di over 65 più alta")
+tab <- set_caption(tab, caption = "Top 15 comuni con la percentuale di over 65 più alta relativamente alla popolazione")
 
 
 # Print the result
@@ -150,16 +150,28 @@ tab
 
 ## Servizi domiciliari
 
-Mariagrazia: aggiungere la spesa totale per SAD e ADI divisa tra carico stato, regione, utenti. In totale nella regione per il servizio SAD si è speso `r sum(db$sad_spesa_tot)`,  di cui `r sum(db$sad_spesa_ssn)`  a carico del Servizio Sanitario, `r sum(db$sad_spesanetta)` a carico della regine e `r sum(db$sad_spesa_utenti)` a carico dei cittadini. In totale nella regione per il servizio ADI si è speso `r sum(db$adi_spesa_tot)`, di cui `r sum(db$adi_spesa_ssn)` a carico del Sistema Sanitario, `r sum(db$adi_spesanetta)` a carico della regione e `r sum(db$adi_spesa_utendi)` a carico dei cittadini.
+In totale nella regione per il servizio SAD si è speso `r formatC(sum(db$sad_spesa_tot)/1000000)` milioni,  di cui `r formatC(sum(db$sad_spesanetta)/1000000)` milioni a carico della regione e `r formatC(sum(db$sad_spesa_utenti)/1000000)` milioni a carico dei cittadini. 
+
+In totale nella regione per il servizio ADI si è speso `r formatC(sum(db$adi_spesa_tot)/1000000)` milioni, di cui `r formatC(sum(db$adi_spesanetta)/1000000)` milioni a carico della regione e `r formatC(sum(db$adi_spesa_utendi)/1000000)` milioni a carico dei cittadini.
 
 Bisogna tener presente che `r sum(db$sad_utenti == 0)` su `r nrow(db)` non hanno alcun utente in SAD, e sono stati esclusi dalla tabella.
 
 ```{r mappa_adi_sad, dpi=300, fig.width=7, fig.height= 7}
+library(RColorBrewer)
+
+# create color palette
+n <- 10 # the number of colors to be in the palette
+palette <- colorRampPalette(c("white", brewer.pal(8, "Blues")))(n)
+
+# Define breaks
+breaks <- c(0,1,50,100,150, 200)
+
 tmap_mode("plot")
 tm_shape(db_map1) + # il database con i dati
   tm_polygons("sad_utenti", # il dato da mappare
-              style = "pretty", # capire quale sia lo stile migliore
-              palette = "Blues", # la scala di colori
+              style = "fixed", # capire quale sia lo stile migliore
+              palette = palette, 
+              breaks = breaks, 
               title = "Numero utenti in SAD",
               border.lwd = 0.5,
               popup.vars = c("Pop > di 65" = "over65", 
@@ -267,7 +279,7 @@ tab <- set_header_labels(tab,
 tab <- autofit(tab)
 
 #Add the caption
-tab <- set_caption(tab, caption = "Top 10 comuni per utenti SAD su popolazione over 65")
+tab <- set_caption(tab, caption = "Top 10 comuni con meno utenti SAD su popolazione over 65")
 
 
 # Print the result
@@ -277,7 +289,7 @@ tab
 
 ## Spsa per RSA (Residenza Sanitaria Assistenziale)
 
-Mariagrazia: In totale nella regione per i servizi di RSA sono stati spesi `r sum(db$rsa_spesa_tot)`, di cui `r sum(db$rsa_spesa_ssn)` a carico del Sistema Sanitario, `r sum(db$rsa_spesanetta)` a carico della regione e `r sum(db$rsa_spesa_utenti)` a carico dei cittadini.
+In totale nella regione per i servizi di RSA sono stati spesi `r formatC(sum(db$rsa_spesa_tot)/1000000)` milioni, di cui `r formatC(sum(db$rsa_spesa_ssn)/1000000)` milioni a carico del Sistema Sanitario, `r formatC(sum(db$rsa_spesanetta)/1000000)` milioni a carico della regione e `r formatC(sum(db$rsa_spesa_utenti)/1000000)` milioni a carico dei cittadini.
 
 Bisogna tener presente che `r sum(db$rsa_utenti == 0)` su `r nrow(db)` comuni non hanno alcun utente in RSA (ad esempio il comune di Macerata), e sono stati esclusi dalla tabella, ma meritano una analisi specifica.
 
@@ -371,8 +383,6 @@ tab
 
 ## Consumo risorse ospedaliere
 
-Mariagrazia: rifare la tabella togliendo il dato per provincia ma aggiunggendo il burden di malattia anche in termini di giorni e di valori
-
 ```{r tab_malattie_provincia}
 tab <- flextable(malattie)
 
@@ -381,7 +391,7 @@ tab <- set_header_labels(tab,
                          disease = "Malattia",
                          ricoveri = "Numero di ricoveri",
                          giorni_degenza = "Giorni di degenza generati",
-                         costo_ricoveri = "Costo dei ricoveri"
+                         costo_ricoveri = "Costo dei ricoveri (milioni)"
                                  )
 
 # Autofit the table
@@ -399,10 +409,10 @@ tab
 ```{r map_ncds, dpi=300, fig.width=7, fig.height= 7}
 tmap_mode("plot")
 tm_shape(db_map1) + # il database con i dati
-  tm_polygons("perc_ricoveri", # il dato da mappare
+  tm_polygons("perc_ricoveri_c", # il dato da mappare
               style = "pretty", # capire quale sia lo stile migliore
               palette = "Blues", # la scala di colori
-              title = "Proporzione di ricoveri associati a NCDs",
+              title = "Proporzione di spesa per ricoveri associati a NCDs",
               border.lwd = 0.5,
               popup.vars = c("Pop > di 65" = "over65", 
                              "Pop totale" = "popolazione", 
@@ -411,7 +421,7 @@ tm_shape(db_map1) + # il database con i dati
     tm_bubbles("ricoveri_pat", col = "red" , size = "ricoveri_pat", scale = 1, alpha = 0.5, style = "pretty", legend.size.show = F) +
   tm_shape(italy_province) + # Aggiungi i confini delle province
   tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
-  tm_layout(main.title = "Comuni per domanda di servizi ospedalieri associati a NCDs", main.title.size = 0.8,
+  tm_layout(main.title = "Comuni per proporzione di spesa ospedaliera associata a NCDs", main.title.size = 0.8,
             legend.title.size = 0.8, # Make the legend title smaller
             legend.position = c("left", "bottom")) # Reposition the legend
 
@@ -430,11 +440,11 @@ La domanda di questi servizi è certamente associato all'età, ovvero alla perce
 Il grafico seguente mostra la correlazione tra percentuale di anziani e percentuale di ricoveri associati a NCDs per comune e la tabella seguente mostra il risultato di una regressione lineare che include anche il reddito medio per comune (altra variabile che potrebbe essere associata ad un peggiore stato di salute.
 
 ```{r graf_regressione_ricoveri_anziani, dpi=300}
-ggplot(db1, aes(x=perc_65, y=perc_ricoveri)) + 
+ggplot(db1, aes(x=perc_65, y=perc_ricoveri_c)) + 
   geom_point() + 
   geom_smooth(method=lm, se=TRUE, color="red", fill="pink") + # Aggiunge una linea di regressione con intervallo di confidenza
   theme_minimal() +
-  labs(x = "Percentuale di persone over 65", y = "Percentuale di ricoveri per NCDs",
+  labs(x = "Percentuale di persone over 65", y = "Percentuale di spesa per ricoveri per NCDs",
        title = "Scatter plot con linea di regressione")
 
 
@@ -446,25 +456,25 @@ db1 <- db1 %>%
   mutate(reddito_adj = reddito_2019/100)
 
 # esegui la regressione lineare multivariabile
-model_multi <- lm(perc_ricoveri ~ perc_65 + reddito_adj, data = db1)
+model_multi_c <- lm(perc_ricoveri_c ~ perc_65 + reddito_adj, data = db1)
 
 # crea una lista di etichette per le variabili
 label_list <- c("perc_65" = "Percentuale di over 65", "reddito_adj" = "Reddito medio comune")
 
 # crea la tabella di regressione
-tbl_regression(model_multi, label = label_list) %>% 
+tbl_regression(model_multi_c, label = label_list) %>% 
   add_glance_source_note(    
     include = c(r.squared, adj.r.squared, AIC, nobs)
   )
 
 # ottieni un riepilogo del modello
-summary_model_multi <- summary(model_multi)
+summary_model_multi <- summary(model_multi_c)
 
 
 
 ```
 
-Come si può vedere, sebbene le due variabili siano collegate, il modello spiega solo il `r percent(summary_model_multi$r.squared, accuracy = 0.1)` della variabilità. In altre parole ci sono molti altri fattori correlati alla domanda di servizi ospedalieri legati a queste patolofie su cui si può intervenire per ridurla.
+Come si può vedere, sebbene le due variabili siano collegate, il modello spiega solo il `r percent(summary_model_multi$r.squared, accuracy = 0.1)` della variabilità. In altre parole ci sono molti altri fattori correlati alla domanda di servizi ospedalieri legati a queste patologie su cui si può intervenire per ridurla.
 
 Le tabelle seguenti mostrano i comuni che si discostano maggiormente dal valore atteso in positivo e in negativo.
 
@@ -475,13 +485,13 @@ I secondi, al contrario, sono quelli che a parità di anziani generano meno rico
 La mappa mostra questi comuni rispettivamente in rosso e in verde
 
 ```{r tab_comuni_malati}
-tab <- resid_plus %>% select(-cod_istat)
+tab <- resid_plus_c %>% select(-cod_istat)
 tab <- flextable(tab)
 
 # Format the proportion column as a percentage with 1 digit
 tab <- compose(tab, 
-                       j = "perc_ricoveri",
-                       value = as_paragraph(percent(perc_ricoveri, accuracy = 0.1))) 
+                       j = "perc_ricoveri_c",
+                       value = as_paragraph(percent(perc_ricoveri_c, accuracy = 0.1))) 
 
 tab <-  compose(tab, 
                        j = "perc_65",
@@ -495,14 +505,14 @@ tab <- set_header_labels(tab,
                                  popolazione = "Popolazione", 
                                  perc_65 = "% anzianiover 65", 
                                  ricoveri_pat = "N. ricoveri per NCDs",
-                                 perc_ricoveri = "% rioveri NCDs su totale ricoveri",
+                                 perc_ricoveri_c = "% spesa per ricveri NCDs su totale",
                          over65 = "N. anziani (over 65)")
 
 # Autofit the table
 tab <- autofit(tab)
 
 #Add the caption
-tab <- set_caption(tab, caption = "Top 15 comuni ricoveri NCDs a parità di anziani")
+tab <- set_caption(tab, caption = "Top 15 comuni spesa ricoveri NCDs a parità di anziani")
 
 # Print the result
 tab
@@ -510,13 +520,13 @@ tab
 ```
 
 ```{r tab_comuni_sani}
-tab <- resid_less %>% select(-cod_istat)
+tab <- resid_less_c %>% select(-cod_istat)
 tab <- flextable(tab)
 
 # Format the proportion column as a percentage with 1 digit
 tab <- compose(tab, 
-                       j = "perc_ricoveri",
-                       value = as_paragraph(percent(perc_ricoveri, accuracy = 0.1))) 
+                       j = "perc_ricoveri_c",
+                       value = as_paragraph(percent(perc_ricoveri_c, accuracy = 0.1))) 
 
 tab <-  compose(tab, 
                        j = "perc_65",
@@ -528,16 +538,16 @@ tab <- set_header_labels(tab,
                          row_order = "N.",
                                  territorio = "Comune", 
                                  popolazione = "Popolazione", 
-                                 perc_65 = "% anzianiover 65", 
+                                 perc_65 = "% anziani over 65", 
                                  ricoveri_pat = "N. ricoveri per NCDs",
-                                 perc_ricoveri = "% rioveri NCDs su totale ricoveri",
+                                 perc_ricoveri_c = "% spesa per ricoveri NCDs su totale",
                          over65 = "N. anziani (over 65)")
 
 # Autofit the table
 tab <- autofit(tab)
 
 #Add the caption
-tab <- set_caption(tab, caption = "Top 15 comuni con meno ricoveri NCDs a parità di anziani")
+tab <- set_caption(tab, caption = "Top 15 comuni con minor spesa per ricoveri NCDs a parità di anziani")
 
 # Print the result
 tab
@@ -545,16 +555,16 @@ tab
 
 ```{r mappa_residui, dpi=300, fig.width=5}
 # Factorize your "col" column with custom labels
-db_map_res$col <- factor(db_map_res$col, 
+db_map_res_c$col <- factor(db_map_res_c$col, 
                          levels = c("red", "green", "Na"), 
                          labels = c("Più ricoveri", "Meno ricoveri", ""))
 
 tmap_mode("plot")
-tm_shape(db_map_res) + # il database con i dati
+tm_shape(db_map_res_c) + # il database con i dati
   tm_polygons("col", # il dato da mappare
               palette = c("red", "green", "white"), # set colors for different categories
               missing = "white", # set color for NA
-              title = "Comuni con più o meno ricoveri rispetto a valore atteso",
+              title = "Comuni con più o meno spesa per ricoveri NCD rispetto a valore atteso",
               border.lwd = 0.5,
               popup.vars = c("Pop > di 65" = "over65", 
                              "Pop totale" = "popolazione", 

@@ -663,5 +663,7 @@ malattie <- malattie %>%
   adorn_pct_formatting(digits = 3) %>% 
   adorn_ns(position = "front") %>% 
   print()
+
+names(db)
   
   

@@ -236,8 +236,6 @@ df_summary_d <- df_long %>%
   group_by(disease) %>%
   summarise(giorni_degenza = sum(value, na.rm = TRUE))
 
-sum(db$ricoveri_totali_d)
-
 altre_patologie <- sum(db$ricoveri_totali_d) - sum(df_summary_d$giorni_degenza)
 new_row <- data.frame(disease = "altre_patologie", giorni_degenza = altre_patologie)
 df_summary_d <- rbind(df_summary_d, new_row)
@@ -265,20 +263,25 @@ new_row <- data.frame(disease = "altre_patologie", costo_ricoveri = altre_patolo
 df_summary_c <- rbind(df_summary_c, new_row)
 
 malattie <- left_join(df_summary, df_summary_d)
-malattie <- left_join(malattie, df_summary_c)
+malattie_num <- left_join(malattie, df_summary_c)
 
-malattie <- malattie %>% 
+altri_ric <- malattie_num %>% filter(disease == "altre_patologie") %>% pull(ricoveri)
+altri_cos <- malattie_num %>% filter(disease == "altre_patologie") %>% pull(costo_ricoveri)
+costo_ncd <- format(sum(malattie_num$costo_ricoveri) - altri_cos, big.mark = ".")
+
+perc_ricoveri_ncd <- percent((sum(malattie_num$ricoveri) - altri_ric) / sum(malattie_num$ricoveri), accuracy = 0.01)
+perc_costo_ncd <- percent((sum(malattie_num$costo_ricoveri) - altri_cos) / sum(malattie_num$costo_ricoveri), accuracy = 0.01)
+
+malattie <- malattie_num %>% 
   mutate(giorni_degenza = round(giorni_degenza, digits = 0),
-         costo_ricoveri = round(costo_ricoveri, digits = 0)) %>% 
+         costo_ricoveri = round(costo_ricoveri/1000000, digits = 2)) %>% 
   adorn_totals(where = c("row")) %>% 
   adorn_percentages(denominator = "col") %>% 
-  adorn_pct_formatting(digits = 3) %>% 
+  adorn_pct_formatting(digits = 2) %>% 
   adorn_ns(position = "front") %>% 
   print()
 
-
-
-# Comuni che si discostano dalla regressione
+# Comuni che si discostano dalla regressione con perc ricoveri ####
 
 resid_plus <- db_resid_multi %>%
   # Filter the municipalities with population higher than 2000
@@ -314,6 +317,45 @@ db_resid <- rbind(db_plus, db_less) %>% select(-row_order)
 # DB per la mappa in cui unisco i dati per ciascun comune con i confini dei comuni
 db_map_res <- left_join(italy_comuni, db_resid, by = "cod_istat") 
 db_map_res <- db_map_res %>% relocate(territorio, .before = cod_istat)
+
+# Comuni che si discostano dalla regressione con COSTO ricoveri ####
+
+resid_plus_c <- db_resid_multi_c %>%
+  # Filter the municipalities with population higher than 2000
+  filter(resid > 0) %>% 
+  # Select necessary columns
+  select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri_c ) %>%
+  # Arrange the data in descending order based on the number of people over 65
+  # Get the top 15 records
+  head(15) %>% 
+  mutate(row_order = row_number()) %>% 
+  relocate(row_order, .before = cod_istat) 
+
+resid_less_c <- db_resid_multi_c %>%
+  # Filter the municipalities with population higher than 2000
+  filter(resid < 0) %>%
+  arrange(resid) %>% 
+  # Select necessary columns
+  select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri_c ) %>%
+  # Arrange the data in descending order based on the number of people over 65
+  # Get the top 15 records
+  head(15) %>% 
+  mutate(row_order = row_number()) %>% 
+  relocate(row_order, .before = cod_istat) 
+
+db_plus_c <- resid_plus_c %>% 
+  mutate(col = "red")
+
+db_less_c <- resid_less_c %>% 
+  mutate(col = "green")
+
+db_resid_c <- rbind(db_plus_c, db_less_c) %>% select(-row_order)
+
+# DB per la mappa in cui unisco i dati per ciascun comune con i confini dei comuni
+db_map_res_c <- left_join(italy_comuni, db_resid_c, by = "cod_istat") 
+db_map_res_c <- db_map_res_c %>% relocate(territorio, .before = cod_istat)
+
+
 
 
 # Save image ####
