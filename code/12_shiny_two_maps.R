@@ -53,7 +53,7 @@ variabili_pop <- c("% anziani over 65" = "perc_65",
 # Define UI
 ui <- fluidPage(
   titlePanel("Comuni della regione Marche"),
-  em("Versione mappa aggiornata il 29 maggio"),
+  em("Versione mappa aggiornata il 09 giugno"),
   sidebarLayout(
     sidebarPanel(
       selectInput("gradient_var1", 

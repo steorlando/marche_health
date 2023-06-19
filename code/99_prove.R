@@ -666,4 +666,6 @@ malattie <- malattie %>%
 
 names(db)
   
-  
+
+sum(db$adi_utenti)
+sum(db$over65)  
