@@ -1,5 +1,7 @@
 ---
-title: "Presentazione 23 giugno"
+title: "Presentazione Regione Marche"
+subtitle: "23 giugno 2023"
+author: "Prof. Stefano Orlando"
 output:
   powerpoint_presentation:
     reference_doc: ref.pptx
@@ -33,9 +35,9 @@ db_map1 <- db_map
 db1 <- db
 ```
 
-## I bisogni di salute nei comuni delle Marche - la presenza degli anziani
+## I bisogni di salute nei comuni delle Marche - l'invecchiamento della popolazione
 
-La presenza degli anziani nei vari comuni è un dato importante per stimare il bisogno di salute, perché l'età è associata ad un aumento di patologie croniche non trasmissibili, ovvero malattie prevenibili, molto costose da trattare, e per le quali il sistema ospedalocentrico è meno efficiente. Nelle marche, nel 2020 (ultimo censimento ISTAT), c'erano
+La presenza degli anziani nei vari comuni è un dato importante per stimare il bisogno di salute, perché l'età è associata ad un aumento di patologie croniche non trasmissibili, ovvero malattie prevenibili, molto costose da trattare, e per le quali il sistema ospedalocentrico è meno efficiente. Nelle Marche, nel 2020 (ultimo censimento ISTAT), c'erano
 
 -   `r formatC(tot_over65, big.mark=".")` residenti con più di 65 anni, pari al `r percent(tot_perc65, accuracy = 0.01)` della popolazione
 
@@ -290,7 +292,7 @@ L'ADI (Assistenza Domiciliare Integrata) è un servizio dedicato alla cura e all
 
 Osservare la disponibilità dei servizi domiciliari sia in termini di anziani serviti sia in termini di spesa per anziano può fornire supporto nella gestione e allocazione di risorse ed investimenti dedicati a questi servizi per rispondere alle necessità della popolazione anziana.
 
-## La spesa per RSA
+## La spesa per RSA (Residenze Sanitarie Assistenziali)
 
 Considerando l'aumento della domanda di RSA a causa dell'invecchiamento della popolazione, è importante riflettere sull'uso appropriato di tali servizi e su come renderli più efficienti.
 
