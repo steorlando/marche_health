@@ -24,7 +24,9 @@ pacman::p_load(magrittr,      # Pipes
                gtsummary,
                shiny,
                broom,
-               purrr
+               purrr,
+               ggrepel,
+               stringr
                )        
 
 rm(list = ls())
@@ -39,6 +41,7 @@ source(here::here("code","05_db_mappe.R")) # codice per preaprare il db principa
 source(here::here("code","05b_db_mappe_sdo.R")) # sistemo i dati elaborati da paolo su SDO
 source(here::here("code","05c_db_mappe_socio.R"))
 source(here::here("code","13_regressione.R"))
+source(here::here("code","07_dati_farma.R"))
 source(here::here("code","10_dati_report.R")) 
 
 

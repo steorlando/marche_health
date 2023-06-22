@@ -11,11 +11,12 @@ n_2000 <- db %>%
 
 # Percentuale anziani over 65
 
-
 tot_perc65 <- tot_over65 / tot_popolazione
 
 # anziani over 80
 tot_over80 <- sum(db$over80)
+
+tot_perc80 <- tot_over80 / tot_popolazione
 
 # Comuni con più di 2000 anziani
 
@@ -32,6 +33,9 @@ n_com_25_65 <- db %>%
 
 ## comuni che hanno attivato il servizio
 n_com_sad <- sum(db$sad_presenza)
+n_com_adi <- sum(db$adi_presenza)
+
+com_adi <- db %>% filter(adi_utenti > 0)
 
 # Spesa servizi territoriali
 
@@ -47,18 +51,24 @@ utenti_rsa <- sum(db$rsa_utenti)
 utenti_terr <- utenti_adi + utenti_sad + utenti_rsa
 
 # Tabelle report ####
-## I primi 15 comuni per numero di anziani ####
+
+## Parametri
+
+filter_pop <- 1000
+tab_row <- 15
+
+## I primi 20 comuni per numero di anziani ####
 
 # Perform the operations
 com_anziani <- db %>%
   # Filter the municipalities with population higher than 2000
-  filter(popolazione > 2000) %>%
+  filter(popolazione > filter_pop) %>%
   # Select necessary columns
   select(territorio, popolazione, over65, perc_65) %>%
   # Arrange the data in descending order based on the number of people over 65
   arrange(desc(over65)) %>%
   # Get the top 15 records
-  head(15) %>% 
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   select("row_order", "territorio", "over65", "popolazione", "perc_65")
 
@@ -68,73 +78,79 @@ com_anziani <- db %>%
 # Perform the operations
 perc_anziani <- db %>%
   # Filter the municipalities with population higher than 2000
-  filter(popolazione > 2000) %>%
+  filter(popolazione > filter_pop) %>%
   # Select necessary columns
   select(territorio, popolazione, over65, perc_65) %>%
   # Arrange the data in descending order based on the number of people over 65
   arrange(desc(perc_65)) %>%
   # Get the top 15 records
-  head(15) %>% 
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   select("row_order", "territorio", "perc_65", "over65",  "popolazione")
 
-# I primi 10 comuni per utenti SAD su popolazione
+## I primi 10 comuni per utenti SAD su popolazione ####
 # Perform the operations
 perc_sad <- db %>%
   # Filter the municipalities with population higher than 2000
-  filter(popolazione > 2000) %>%
+  filter(popolazione > filter_pop) %>%
   # Select necessary columns
   select(territorio, popolazione, sad_utenti, over65, sad_spesa_tot, sad_spesa_utente, sad_spesa_anziano ) %>%
+  mutate(sad_spesa_utente = floor(sad_spesa_utente),
+         sad_spesa_anziano = floor(sad_spesa_anziano)) %>% 
   mutate(perc_sad_utenti = sad_utenti / popolazione) %>% 
   # Arrange the data in descending order based on the number of people over 65
   arrange(desc(perc_sad_utenti)) %>%
   # Get the top 10 records
-  head(10) %>% 
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   select("row_order", "territorio", "sad_utenti", "sad_spesa_tot", "sad_spesa_utente", "sad_spesa_anziano", "over65")
 
-# I primi 10 comuni per MENO utenti SAD su popolazione (dove presente)
+## I primi 10 comuni per MENO utenti SAD su popolazione (dove presente) ####
 # Perform the operations
 perc_sad_less <- db %>%
   # Filter the municipalities with population higher than 2000
-  filter(popolazione > 2000) %>%
+  filter(popolazione > filter_pop) %>%
   filter(sad_utenti > 0) %>% 
   # Select necessary columns
   select(territorio, popolazione, sad_utenti, sad_spesa_tot, sad_spesa_utente, sad_spesa_anziano, over65 ) %>%
   mutate(perc_sad_utenti = sad_utenti / popolazione) %>% 
+  mutate(sad_spesa_utente = floor(sad_spesa_utente),
+         sad_spesa_anziano = floor(sad_spesa_anziano)) %>% 
   # Arrange the data in descending order based on the number of people over 65
   arrange(perc_sad_utenti) %>%
   # Get the top 10 records
-  head(10) %>% 
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   select("row_order", "territorio", "sad_utenti", "sad_spesa_tot", "sad_spesa_utente", "sad_spesa_anziano", "over65")
 
-# I primi 15 comuni per spesa RSA per anziano
+## I primi tab_row comuni per spesa RSA per anziano ####
 # Perform the operations
 rsa_spesa <- db %>%
-  # Filter the municipalities with population higher than 2000
-  filter(popolazione > 2000) %>%
+  # Filter the municipalities with population higher than filter_pop
+  filter(popolazione > filter_pop) %>%
   # Select necessary columns
   select(territorio, popolazione, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65 ) %>%
+  mutate(rsa_spesa_utente = floor(rsa_spesa_utente),
+         rsa_spesa_anziano = floor(rsa_spesa_anziano)) %>% 
   # Arrange the data in descending order based on the number of people over 65
   arrange(desc(rsa_spesa_anziano)) %>%
   # Get the top 10 records
-  head(15) %>% 
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   select(row_order, territorio, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65)
 
-# I primi 15 comuni per minore spesa RSA per anziano
+# I primi tab_row comuni per minore spesa RSA per anziano
 # Perform the operations
 rsa_spesa_less <- db %>%
-  # Filter the municipalities with population higher than 2000
-  filter(popolazione > 2000) %>%
+  # Filter the municipalities with population higher than filter_pop
+  filter(popolazione > filter_pop) %>%
   filter(rsa_utenti > 0) %>% 
   # Select necessary columns
   select(territorio, popolazione, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65 ) %>%
   # Arrange the data in descending order based on the number of people over 65
   arrange(rsa_spesa_anziano) %>%
   # Get the top 10 records
-  head(15) %>% 
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   select(row_order, territorio, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65)
 
@@ -142,12 +158,25 @@ rsa_spesa_less <- db %>%
 # Elenco ricoveri per patologia e provincia ####
 
 # List of diseases
-diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
-              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
-              "demenze", "irc_non_dialitica")
+diseases <- c("Ipertensione", "Asma", "BPCO", "Diabete", 
+              "Diabete complicato", "Cardiopatia ischemica", "Scompenso cardiaco", 
+              "Demenze", "IRC non dialitica")
+
+db_m <- db %>% 
+  #select(-ipo_iper_tiroidismo) %>% 
+  rename(Ipertensione = ipertensione,
+         Asma = asma,
+         BPCO = bpco,
+         Diabete = diabete,
+         'Diabete complicato' = diabete_complicato,
+         'Cardiopatia ischemica' = cardiopatia_ischemica,
+         'Scompenso cardiaco' = scompenso_cardiaco,
+         Demenze = demenze,
+         'IRC non dialitica' = irc_non_dialitica
+  )
 
 # Create a new dataframe with only the necessary columns
-df_diseases <- db %>%
+df_diseases <- db_m %>%
   select(provincia, all_of(diseases), ricoveri_totali)
 
 # Gather the diseases into a single column
@@ -195,13 +224,9 @@ df_final <- df_final %>%
 
 # Elenco ricoveri per patologia con giorni e costi ####
 
-# List of diseases
-diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", 
-              "diabete_complicato", "cardiopatia_ischemica", "scompenso_cardiaco", 
-              "demenze", "irc_non_dialitica")
 
 # Create a new dataframe with only the necessary columns
-df_diseases <- db %>%
+df_diseases <- db_m %>%
   select(all_of(diseases))
 
 # Gather the diseases into a single column
@@ -215,7 +240,7 @@ df_summary <- df_long %>%
 
 altre_patologie <- sum(db$ricoveri_totali) - sum(df_summary$ricoveri)
 
-new_row <- data.frame(disease = "altre_patologie", ricoveri = altre_patologie)
+new_row <- data.frame(disease = "Altre patologie", ricoveri = altre_patologie)
 df_summary <- rbind(df_summary, new_row)
 
 ## Elenco giorni di degenza per patologia  ####
@@ -227,6 +252,19 @@ df_diseases <- db %>%
 
 names(df_diseases) <- sub("_d$", "", names(df_diseases))
 
+df_diseases <- df_diseases %>% 
+  #select(-ipo_iper_tiroidismo) %>% 
+  rename(Ipertensione = ipertensione,
+         Asma = asma,
+         BPCO = bpco,
+         Diabete = diabete,
+         'Diabete complicato' = diabete_complicato,
+         'Cardiopatia ischemica' = cardiopatia_ischemica,
+         'Scompenso cardiaco' = scompenso_cardiaco,
+         Demenze = demenze,
+         'IRC non dialitica' = irc_non_dialitica
+  )
+
 # Gather the diseases into a single column
 df_long <- df_diseases %>%
   pivot_longer(cols = all_of(diseases), names_to = "disease", values_to = "value")
@@ -237,10 +275,14 @@ df_summary_d <- df_long %>%
   summarise(giorni_degenza = sum(value, na.rm = TRUE))
 
 altre_patologie <- sum(db$ricoveri_totali_d) - sum(df_summary_d$giorni_degenza)
-new_row <- data.frame(disease = "altre_patologie", giorni_degenza = altre_patologie)
+new_row <- data.frame(disease = "Altre patologie", giorni_degenza = altre_patologie)
 df_summary_d <- rbind(df_summary_d, new_row)
 
 ## Elenco costo ricoveri per patologia  ####
+
+diseases <- c("Ipertensione", "Asma", "BPCO", "Diabete", 
+              "Diabete complicato", "Cardiopatia ischemica", "Scompenso cardiaco", 
+              "Demenze", "IRC non dialitica")
 
 # List of diseases
 # Create a new dataframe with only the necessary columns
@@ -248,6 +290,19 @@ df_diseases <- db %>%
   select(ends_with("_c"))
 
 names(df_diseases) <- sub("_c$", "", names(df_diseases))
+
+df_diseases <- df_diseases %>% 
+ # select(-ipo_iper_tiroidismo) %>% 
+  rename(Ipertensione = ipertensione,
+         Asma = asma,
+         BPCO = bpco,
+         Diabete = diabete,
+         'Diabete complicato' = diabete_complicato,
+         'Cardiopatia ischemica' = cardiopatia_ischemica,
+         'Scompenso cardiaco' = scompenso_cardiaco,
+         Demenze = demenze,
+         'IRC non dialitica' = irc_non_dialitica
+         )
 
 # Gather the diseases into a single column
 df_long <- df_diseases %>%
@@ -259,15 +314,15 @@ df_summary_c <- df_long %>%
   summarise(costo_ricoveri = sum(value, na.rm = TRUE))
 
 altre_patologie <- sum(db$ricoveri_totali_c) - sum(df_summary_c$costo_ricoveri)
-new_row <- data.frame(disease = "altre_patologie", costo_ricoveri = altre_patologie)
+new_row <- data.frame(disease = "Altre patologie", costo_ricoveri = altre_patologie)
 df_summary_c <- rbind(df_summary_c, new_row)
 
 malattie <- left_join(df_summary, df_summary_d)
 malattie_num <- left_join(malattie, df_summary_c)
 
-altri_ric <- malattie_num %>% filter(disease == "altre_patologie") %>% pull(ricoveri)
-altri_cos <- malattie_num %>% filter(disease == "altre_patologie") %>% pull(costo_ricoveri)
-costo_ncd <- format(sum(malattie_num$costo_ricoveri) - altri_cos, big.mark = ".")
+altri_ric <- malattie_num %>% filter(disease == "Altre patologie") %>% pull(ricoveri)
+altri_cos <- malattie_num %>% filter(disease == "Altre patologie") %>% pull(costo_ricoveri)
+costo_ncd <- sum(malattie_num$costo_ricoveri) - altri_cos
 
 perc_ricoveri_ncd <- percent((sum(malattie_num$ricoveri) - altri_ric) / sum(malattie_num$ricoveri), accuracy = 0.01)
 perc_costo_ncd <- percent((sum(malattie_num$costo_ricoveri) - altri_cos) / sum(malattie_num$costo_ricoveri), accuracy = 0.01)
@@ -278,31 +333,29 @@ malattie <- malattie_num %>%
   adorn_totals(where = c("row")) %>% 
   adorn_percentages(denominator = "col") %>% 
   adorn_pct_formatting(digits = 2) %>% 
-  adorn_ns(position = "front") %>% 
-  print()
+  adorn_ns(position = "front")
 
 # Comuni che si discostano dalla regressione con perc ricoveri ####
 
 resid_plus <- db_resid_multi %>%
-  # Filter the municipalities with population higher than 2000
+  # Filter the municipalities with population higher than filter_pop
   filter(resid > 0) %>% 
   # Select necessary columns
   select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri ) %>%
-  # Arrange the data in descending order based on the number of people over 65
-  # Get the top 15 records
-  head(15) %>% 
+  # Get the top tab_row records
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   relocate(row_order, .before = cod_istat) 
 
 resid_less <- db_resid_multi %>%
-  # Filter the municipalities with population higher than 2000
+  # Filter the municipalities with population higher than filter_pop
   filter(resid < 0) %>%
   arrange(resid) %>% 
   # Select necessary columns
   select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri ) %>%
   # Arrange the data in descending order based on the number of people over 65
-  # Get the top 15 records
-  head(15) %>% 
+  # Get the top tab_row records
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   relocate(row_order, .before = cod_istat) 
 
@@ -321,25 +374,25 @@ db_map_res <- db_map_res %>% relocate(territorio, .before = cod_istat)
 # Comuni che si discostano dalla regressione con COSTO ricoveri ####
 
 resid_plus_c <- db_resid_multi_c %>%
-  # Filter the municipalities with population higher than 2000
+  # Filter the municipalities with population higher than filter_pop
   filter(resid > 0) %>% 
   # Select necessary columns
   select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri_c ) %>%
   # Arrange the data in descending order based on the number of people over 65
-  # Get the top 15 records
-  head(15) %>% 
+  # Get the top tab_row records
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   relocate(row_order, .before = cod_istat) 
 
 resid_less_c <- db_resid_multi_c %>%
-  # Filter the municipalities with population higher than 2000
+  # Filter the municipalities with population higher than filter_pop
   filter(resid < 0) %>%
   arrange(resid) %>% 
   # Select necessary columns
   select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri_c ) %>%
   # Arrange the data in descending order based on the number of people over 65
-  # Get the top 15 records
-  head(15) %>% 
+  # Get the top tab_row records
+  head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   relocate(row_order, .before = cod_istat) 
 
@@ -356,7 +409,19 @@ db_map_res_c <- left_join(italy_comuni, db_resid_c, by = "cod_istat")
 db_map_res_c <- db_map_res_c %>% relocate(territorio, .before = cod_istat)
 
 
+# Calcolo costi farmaceutica ####
+
+costi_farma <- farma %>% 
+  group_by(malattia, tipo) %>% 
+  summarise(spesa = round(sum(costo)/1000000, digits = 2)) %>% 
+  pivot_wider(names_from = tipo, values_from = spesa) %>% 
+  adorn_totals(where = c("row", "col")) %>% 
+  arrange(Total) %>% 
+  adorn_percentages(denominator = "col") %>% 
+  adorn_pct_formatting(digits = 2) %>% 
+  adorn_ns(position = "front")
 
 
-# Save image ####
+
+  # Save image ####
 save.image (file = "code/my_work_space.RData")

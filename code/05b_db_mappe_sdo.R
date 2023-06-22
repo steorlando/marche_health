@@ -9,13 +9,14 @@ sintesi_sdo <- sintesi_sdo %>%
   rename(cod_istat = comresid)
 
 somma <- function(sintesi_sdo, variabili) {
-  #filtro per classi di eta 2 e 3
   risultati <- aggregate(sintesi_sdo[ ,variabili], by = list(sintesi_sdo$cod_istat), FUN = sum)
   colnames(risultati)[1] <- "cod_istat"
   return(risultati)
 }
 
-variabili <- c("ipertensione", "ipo_iper_tiroidismo", "asma",                 
+variabili <- c("ipertensione", 
+               #"ipo_iper_tiroidismo", 
+               "asma",                 
                "bpco", "diabete",              
                "diabete_complicato", "cardiopatia_ischemica",
                "scompenso_cardiaco", "demenze",              
@@ -28,7 +29,9 @@ db <- left_join(db, risultati_somma, by = "cod_istat", all.x = T)
 
 # Calcolo variabili aggregate
 db <- db %>% 
-  mutate(ricoveri_pat = ipertensione+ ipo_iper_tiroidismo+ asma+                 
+  mutate(ricoveri_pat = ipertensione+ 
+           #ipo_iper_tiroidismo+ 
+           asma+                 
            bpco+ diabete+              
            diabete_complicato+ cardiopatia_ischemica+
            scompenso_cardiaco+ demenze+              
@@ -41,7 +44,9 @@ db <- db %>%
 dw <- import("data/daly_weight.xlsx")
 
 # Create the diseases and weights dataframes
-diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", "diabete_complicato", 
+diseases <- c("ipertensione", 
+              #"ipo_iper_tiroidismo", 
+              "asma", "bpco", "diabete", "diabete_complicato", 
               "cardiopatia_ischemica", "scompenso_cardiaco", "demenze", "irc_non_dialitica")
 
 # Create the new columns in the "db" dataframe
@@ -62,7 +67,9 @@ db <- db %>%
 # Aggiungo giorni di degenza e valore rimborsi ricoveri #### 
 deg_val <- import("data/Sintesi_degenze_valore_rev.xlsx")
 
-diseases <- c("ipertensione", "ipo_iper_tiroidismo", "asma", "bpco", "diabete", "diabete_complicato", 
+diseases <- c("ipertensione", 
+              #"ipo_iper_tiroidismo", 
+              "asma", "bpco", "diabete", "diabete_complicato", 
               "cardiopatia_ischemica", "scompenso_cardiaco", "demenze", "irc_non_dialitica",
               "ricoveri_totali")
 

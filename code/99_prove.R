@@ -669,3 +669,60 @@ names(db)
 
 sum(db$adi_utenti)
 sum(db$over65)  
+
+
+db_map1 <- db_map
+
+# Ordina il dataframe in base alla colonna "over65" in ordine decrescente
+db_map1_sorted <- db_map1[order(-db_map1$over65), ]
+
+# Seleziona i primi 10 comuni
+top_10_comuni <- db_map1_sorted[1:10, ]
+
+# Aggiungi i nomi dei comuni alla mappa
+tmap_mode("plot")
+tm_shape(db_map1) + 
+  tm_polygons("over65", 
+              style = "pretty", 
+              palette = "Blues", 
+              title = "Popolazione > 65 anni",
+              border.lwd = 0.5,
+              popup.vars = c("Pop > di 65" = "over65", 
+                             "Pop totale" = "popolazione", 
+                             "% anziani > 65" = "prop65_map")) + 
+  tm_shape(italy_province) + 
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + 
+  tm_shape(top_10_comuni) + # Aggiungi i top 10 comuni
+  tm_text("territorio", size = 1, col = "black", remove.overlap = F) + # Aggiungi i nomi dei comuni
+  tm_layout(legend.title.size = 0.8, 
+            legend.position = c("left", "bottom"))
+
+library(ggplot2)
+library(ggrepel)
+
+# Ordina il dataframe in base alla colonna "over65" in ordine decrescente
+db_map1_sorted <- db_map1[order(-db_map1$over65), ]
+
+# Seleziona i primi 20 comuni
+top_20_comuni <- db_map1_sorted[1:20, ]
+
+# Calcola il centroide di ogni comune
+top_20_comuni$centroid <- st_centroid(top_20_comuni$geometry)
+
+# Estrai le coordinate x e y dei centroidi
+top_20_comuni$x <- st_coordinates(top_20_comuni$centroid)[, 1]
+top_20_comuni$y <- st_coordinates(top_20_comuni$centroid)[, 2]
+
+# Crea la mappa con ggplot2
+ggplot() +
+  geom_sf(data = db_map1, aes(fill = over65)) +
+  geom_sf(data = italy_province, fill = NA, color = "darkgreen", size = 1.5) +
+  geom_text_repel(data = top_20_comuni, 
+                  aes(x = x, y = y, label = territorio), 
+                  size = 3, 
+                  box.padding = unit(0.35, "lines"),
+                  point.padding = unit(0.3, "lines")) +
+  scale_fill_viridis_c(option = "viridis", direction = -1) +
+  theme_minimal() +
+  theme(legend.position = c(0.8, 0.8))
+
