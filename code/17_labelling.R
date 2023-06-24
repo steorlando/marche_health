@@ -1,0 +1,27 @@
+# definisci un vettore con le etichette delle colonne
+col_labels <- c(
+  "territorio" = "Comune",
+  "popolazione" = "Popolazione",
+  "reddito_2019" = "Reddito 2019",
+  "over65" = "Anziani Over 65",
+  "over80" = "Anziani Over 80",
+  "perc_65" = "Percentuale Anziani Over 65",
+  "perc_80" = "Percentuale Anziani Over 80",
+  "adi_utenti" = "Utenti ADI",
+  "adi_spesa_tot" = "Spesa Totale ADI",
+  "adi_spesa_utente" = "Spesa per Utente ADI",
+  "adi_spesa_anziano" = "Spesa per Anziano ADI",
+  "sad_utenti" = "Utenti SAD",
+  "sad_spesa_tot" = "Spesa Totale SAD",
+  "sad_spesa_utente" = "Spesa per Utente SAD",
+  "sad_spesa_anziano" = "Spesa per Anziano SAD",
+  "rsa_utenti" = "Utenti RSA",
+  "rsa_spesa_tot" = "Spesa Totale RSA",
+  "rsa_spesa_utente" = "Spesa per Utente RSA",
+  "rsa_spesa_anziano" = "Spesa per Anziano RSA",
+  "spesa_tot" = "Spesa sanità territoriale",
+  "ricoveri_pat" = "Ricoveri associati a NCDs",
+  "perc_ricoveri" = "Percentuale di Ricoveri associati a NCDs",
+  "ricoveri_pat_c" = "Costo Ricoveri associati a NCDs",
+  "perc_ricoveri_c" = "Percentuale di spesa Ricoveri associati a NCDs"
+)

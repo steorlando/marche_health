@@ -1,0 +1,14 @@
+name: tabella_comuni
+title: tabella_comuni
+username:
+account: stefano-orlando
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9353219
+bundleId: 7379275
+url: https://stefano-orlando.shinyapps.io/tabella_comuni/
+when: 1687515323.39954
+lastSyncTime: 1687515323.39955
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: 00_start.R|02_dati_disponibili.R|03_dati_demografici.R|03b_dati_demografici.R|05_db_mappe.R|05b_db_mappe_sdo.R|05c_db_mappe_socio.R|06_funzioni_per_mappe.R|07_dati_farma.R|08_dati_specialistica.R|09_dati_sdo.R|10_dati_report.R|11_shiny_one_map.R|12_shiny_two_maps.R|13_regressione.R|14_costi_farma.R|16_accessi_ps.R|17_labelling.R|30_creo_mappe.R|98_prove_shiny.R|99_prove.R|A_work_in_progress.html|A_work_in_progress.Rmd|B.primo_report.docx|B.primo_report.Rmd|C.presentazione_ppt.pptx|C.primo_report_dati.docx|C.primo_report_dati.Rmd|D.presentazione_ppt.pptx|D.presentazione_ppt.Rmd|my_work_space.RData|ref.pptx|reference.docx|template_demo.pptx

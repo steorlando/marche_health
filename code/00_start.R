@@ -45,6 +45,42 @@ source(here::here("code","07_dati_farma.R"))
 source(here::here("code","10_dati_report.R")) 
 
 
+db_tab <- db %>% 
+  select(territorio,
+         popolazione,
+         reddito_2019,
+         over65,
+         over80,
+         perc_65,
+         perc_80,
+         adi_utenti,
+         adi_spesa_tot,
+         adi_spesa_utente,
+         adi_spesa_anziano,
+         sad_utenti,
+         sad_spesa_tot,
+         sad_spesa_utente,
+         sad_spesa_anziano,
+         rsa_utenti,
+         rsa_spesa_tot,
+         rsa_spesa_utente,
+         rsa_spesa_anziano,
+         spesa_tot,
+         ricoveri_pat,
+         perc_ricoveri,
+         ricoveri_pat_c,
+         perc_ricoveri_c
+  )
+
+# Ottenere i nomi dei campi numerici con valori massimi inferiori a 1
+campi_da_modificare <- names(db_tab)[sapply(db_tab, is.numeric) & sapply(db_tab, function(x) max(x, na.rm = TRUE) < 1)]
+
+# Utilizzare la funzione sapply per applicare una funzione a ciascuno dei campi specificati
+db_tab[, campi_da_modificare] <- sapply(db_tab[, campi_da_modificare], function(x) round(x*100, 2))
+
+
+export(db_tab, "code/db_tab.csv")
+
 # Save image ####
 #save.image (file = "code/my_work_space.RData")
 
