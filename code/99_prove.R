@@ -726,3 +726,38 @@ ggplot() +
   theme_minimal() +
   theme(legend.position = c(0.8, 0.8))
 
+
+
+# Factorize your "col" column with custom labels costo ####
+db_map_res_c$col <- factor(db_map_res_c$col, 
+                           levels = c("red", "green", "Na"), 
+                           labels = c("Più ricoveri", "Meno ricoveri", ""))
+
+tmap_mode("plot")
+tm_shape(db_map_res_c) + # il database con i dati
+  tm_polygons("col", # il dato da mappare
+              palette = c("red", "green", "white"), # set colors for different categories
+              missing = "white", # set color for NA
+              title = "Comuni con più o meno spesa per ricoveri NCD rispetto a valore atteso",
+              border.lwd = 0.5) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(legend.show = F) # Reposition the legend
+
+
+
+
+db_map_res$col <- factor(db_map_res$col, 
+                         levels = c("red", "green", "Na"), 
+                         labels = c("Più ricoveri", "Meno ricoveri", ""))
+
+tmap_mode("plot")
+tm_shape(db_map_res) + # il database con i dati
+  tm_polygons("col", # il dato da mappare
+              palette = c("red", "green", "white"), # set colors for different categories
+              missing = "white", # set color for NA
+              title = "Comuni con più o meno spesa per ricoveri NCD rispetto a valore atteso",
+              border.lwd = 0.5) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(legend.show = F) # Reposition the legend

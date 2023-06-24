@@ -8,6 +8,10 @@ n_2000 <- db %>%
   filter(popolazione < 2000) %>% 
   nrow()
 
+n_1000 <- db %>% 
+  filter(popolazione < 1000) %>% 
+  nrow()
+
 
 # Percentuale anziani over 65
 
@@ -55,7 +59,7 @@ utenti_terr <- utenti_adi + utenti_sad + utenti_rsa
 ## Parametri
 
 filter_pop <- 1000
-tab_row <- 15
+tab_row <- 20
 
 ## I primi 20 comuni per numero di anziani ####
 
@@ -147,6 +151,8 @@ rsa_spesa_less <- db %>%
   filter(rsa_utenti > 0) %>% 
   # Select necessary columns
   select(territorio, popolazione, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65 ) %>%
+  mutate(rsa_spesa_utente = floor(rsa_spesa_utente),
+         rsa_spesa_anziano = floor(rsa_spesa_anziano)) %>% 
   # Arrange the data in descending order based on the number of people over 65
   arrange(rsa_spesa_anziano) %>%
   # Get the top 10 records
@@ -337,7 +343,7 @@ malattie <- malattie_num %>%
 
 # Comuni che si discostano dalla regressione con perc ricoveri ####
 
-resid_plus <- db_resid_multi %>%
+resid_plus <- db_resid_multi_p %>%
   # Filter the municipalities with population higher than filter_pop
   filter(resid > 0) %>% 
   # Select necessary columns
@@ -347,7 +353,7 @@ resid_plus <- db_resid_multi %>%
   mutate(row_order = row_number()) %>% 
   relocate(row_order, .before = cod_istat) 
 
-resid_less <- db_resid_multi %>%
+resid_less <- db_resid_multi_p %>%
   # Filter the municipalities with population higher than filter_pop
   filter(resid < 0) %>%
   arrange(resid) %>% 
@@ -372,12 +378,14 @@ db_map_res <- left_join(italy_comuni, db_resid, by = "cod_istat")
 db_map_res <- db_map_res %>% relocate(territorio, .before = cod_istat)
 
 # Comuni che si discostano dalla regressione con COSTO ricoveri ####
-
+# 
 resid_plus_c <- db_resid_multi_c %>%
   # Filter the municipalities with population higher than filter_pop
   filter(resid > 0) %>% 
   # Select necessary columns
-  select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri_c ) %>%
+  select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri_c_pop) %>%
+  mutate(perc_65 = percent(perc_65, accuracy = 0.1),
+         perc_ricoveri_c_pop = round(perc_ricoveri_c_pop)) %>% 
   # Arrange the data in descending order based on the number of people over 65
   # Get the top tab_row records
   head(tab_row) %>% 
@@ -389,7 +397,9 @@ resid_less_c <- db_resid_multi_c %>%
   filter(resid < 0) %>%
   arrange(resid) %>% 
   # Select necessary columns
-  select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri_c ) %>%
+  select(cod_istat, territorio, popolazione, over65, perc_65, ricoveri_pat, perc_ricoveri_c_pop ) %>%
+  mutate(perc_65 = percent(perc_65, accuracy = 0.1),
+         perc_ricoveri_c_pop = round(perc_ricoveri_c_pop)) %>% 
   # Arrange the data in descending order based on the number of people over 65
   # Get the top tab_row records
   head(tab_row) %>% 
@@ -423,5 +433,5 @@ costi_farma <- farma %>%
 
 
 
-  # Save image ####
+# Save image ####
 save.image (file = "code/my_work_space.RData")

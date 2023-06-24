@@ -36,7 +36,8 @@ db <- db %>%
            diabete_complicato+ cardiopatia_ischemica+
            scompenso_cardiaco+ demenze+              
            irc_non_dialitica,
-         perc_ricoveri = ricoveri_pat / ricoveri_totali)
+         perc_ricoveri = ricoveri_pat / ricoveri_totali,
+         perc_ricoveri_pop = ricoveri_pat / popolazione)
 
 
 
@@ -90,7 +91,9 @@ for (disease in diseases) {
 db <- db %>% 
   mutate(ricoveri_pat_d = rowSums(select(., ends_with("_d"))) - ricoveri_totali_d,
          perc_ricoveri_d = ricoveri_pat_d / ricoveri_totali_d,
+         perc_ricoveri_d_pop = ricoveri_pat_d / popolazione,
          ricoveri_pat_c = rowSums(select(., ends_with("_c")))-ricoveri_totali_c,
-         perc_ricoveri_c = ricoveri_pat_c / ricoveri_totali_c
+         perc_ricoveri_c = ricoveri_pat_c / ricoveri_totali_c,
+         perc_ricoveri_c_pop = ricoveri_pat_c / popolazione
   )
 
