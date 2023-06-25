@@ -77,7 +77,7 @@ com_anziani <- db %>%
   select("row_order", "territorio", "over65", "popolazione", "perc_65")
 
 
-## I primi 15 comuni per % di anziani ####
+## I primi  comuni per % di anziani ####
 
 # Perform the operations
 perc_anziani <- db %>%
@@ -89,6 +89,16 @@ perc_anziani <- db %>%
   arrange(desc(perc_65)) %>%
   # Get the top 15 records
   head(tab_row) %>% 
+  mutate(row_order = row_number()) %>% 
+  select("row_order", "territorio", "perc_65", "over65",  "popolazione")
+
+### Tabella completa per appendice ####
+perc_anziani_full <- db %>%
+  # Filter the municipalities with population higher than 2000
+  # Select necessary columns
+  select(territorio, popolazione, over65, perc_65) %>%
+  # Arrange the data in descending order based on the number of people over 65
+  arrange(desc(perc_65)) %>%
   mutate(row_order = row_number()) %>% 
   select("row_order", "territorio", "perc_65", "over65",  "popolazione")
 
@@ -108,6 +118,21 @@ perc_sad <- db %>%
   head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   select("row_order", "territorio", "sad_utenti", "sad_spesa_tot", "sad_spesa_utente", "sad_spesa_anziano", "over65")
+
+### Tabella completa per appendice ####
+perc_sad_full <- db %>%
+  # Filter the municipalities with SAD active
+  filter(sad_utenti > 0) %>% 
+  # Select necessary columns
+  select(territorio, popolazione, sad_utenti, over65, sad_spesa_tot, sad_spesa_utente, sad_spesa_anziano ) %>%
+  mutate(sad_spesa_utente = floor(sad_spesa_utente),
+         sad_spesa_anziano = floor(sad_spesa_anziano)) %>% 
+  mutate(perc_sad_utenti = sad_utenti / popolazione) %>% 
+  # Arrange the data in descending order based on the number of people over 65
+  arrange(desc(perc_sad_utenti)) %>%
+  mutate(row_order = row_number()) %>% 
+  select("row_order", "territorio", "sad_utenti", "sad_spesa_tot", "sad_spesa_utente", "sad_spesa_anziano", "over65")
+
 
 ## I primi 10 comuni per MENO utenti SAD su popolazione (dove presente) ####
 # Perform the operations
@@ -142,6 +167,19 @@ rsa_spesa <- db %>%
   head(tab_row) %>% 
   mutate(row_order = row_number()) %>% 
   select(row_order, territorio, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65)
+
+### Tabella completa per appendice ####
+rsa_spesa_full <- db %>%
+  filter(rsa_utenti > 0) %>% 
+  # Select necessary columns
+  select(territorio, popolazione, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65 ) %>%
+  mutate(rsa_spesa_utente = floor(rsa_spesa_utente),
+         rsa_spesa_anziano = floor(rsa_spesa_anziano)) %>% 
+  # Arrange the data in descending order based on the number of people over 65
+  arrange(desc(rsa_spesa_anziano)) %>%
+  mutate(row_order = row_number()) %>% 
+  select(row_order, territorio, rsa_spesa_anziano, rsa_utenti, rsa_spesa_utente, rsa_spesa_tot, over65)
+
 
 # I primi tab_row comuni per minore spesa RSA per anziano
 # Perform the operations
@@ -378,7 +416,7 @@ db_map_res <- left_join(italy_comuni, db_resid, by = "cod_istat")
 db_map_res <- db_map_res %>% relocate(territorio, .before = cod_istat)
 
 # Comuni che si discostano dalla regressione con COSTO ricoveri ####
-# 
+
 resid_plus_c <- db_resid_multi_c %>%
   # Filter the municipalities with population higher than filter_pop
   filter(resid > 0) %>% 
@@ -414,6 +452,21 @@ db_less_c <- resid_less_c %>%
 
 db_resid_c <- rbind(db_plus_c, db_less_c) %>% select(-row_order)
 
+names(db)
+### Tabella spesa NCDS ospedale per comune per appendice ####
+ncd_osp_full <- db %>%
+  # Filter the municipalities with population higher than filter_pop
+  # Select necessary columns
+  select(territorio, popolazione, over65, perc_65, ricoveri_pat, ricoveri_totali_c, perc_ricoveri_c_pop) %>%
+  arrange(desc(perc_ricoveri_c_pop)) %>% 
+  mutate(perc_65 = percent(perc_65, accuracy = 0.1),
+         perc_ricoveri_c_pop = round(perc_ricoveri_c_pop),
+         ricoveri_totali_c = round(ricoveri_totali_c)) %>% 
+  # Arrange the data in descending order based on the number of people over 65
+  # Get the top tab_row records
+  mutate(row_order = row_number()) %>% 
+  relocate(row_order, .before = territorio) 
+
 # DB per la mappa in cui unisco i dati per ciascun comune con i confini dei comuni
 db_map_res_c <- left_join(italy_comuni, db_resid_c, by = "cod_istat") 
 db_map_res_c <- db_map_res_c %>% relocate(territorio, .before = cod_istat)
@@ -426,7 +479,6 @@ costi_farma <- farma %>%
   summarise(spesa = round(sum(costo)/1000000, digits = 2)) %>% 
   pivot_wider(names_from = tipo, values_from = spesa) %>% 
   adorn_totals(where = c("row", "col")) %>% 
-  arrange(Total) %>% 
   adorn_percentages(denominator = "col") %>% 
   adorn_pct_formatting(digits = 2) %>% 
   adorn_ns(position = "front")

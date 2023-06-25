@@ -761,3 +761,5 @@ tm_shape(db_map_res) + # il database con i dati
   tm_shape(italy_province) + # Aggiungi i confini delle province
   tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
   tm_layout(legend.show = F) # Reposition the legend
+
+costi_farma

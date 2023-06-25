@@ -76,11 +76,11 @@ La presenza degli anziani nei vari comuni è un dato importante per stimare i pr
 
 [^3]: Piano nazionale delle Cronicità (sistemare citazione)
 
-Nel 2020 (anno dell'ultimo censimento ISTAT), erano presenti `r formatC(tot_over65, big.mark=".")` residenti con più di 65 anni, pari al `r percent(tot_perc65, accuracy = 0.01)` della popolazione, e `r formatC(tot_over80, big.mark=".")` residenti con più di 80 anni, pari al `r percent(tot_perc80, accuracy = 0.01)` della popolazione.
+Nel 2020 (anno dell'ultimo censimento ISTAT), nelle Marche erano presenti `r formatC(tot_over65, big.mark=".")` residenti con più di 65 anni, pari al `r percent(tot_perc65, accuracy = 0.01)` della popolazione, e `r formatC(tot_over80, big.mark=".")` residenti con più di 80 anni, pari al `r percent(tot_perc80, accuracy = 0.01)` della popolazione.
 
 Le mappe e le tabelle seguenti mostrano i comuni con più anziani nella regione, sia in termini assoluti che in proporzione alla popolazione. I nomi dei comuni riportati nella mappe rappresentano i primi 10 per invecchiamento della popolazione in termini assoluti o relativi alla popolisità del comune.
 
-La Tab. 1 mostra i 15 comuni con la popolazione over 65 più alta in termini assoluti, da cui si evince che Ancona e Pesaro sono i comuni più popolosi e per tale ragione la popolazione anziana risulta essere in numero maggiore. La Tab. 2 mostra invece i 15 comuni con la popolazione over 65 maggiore in termini percentuali, mostrando in comuni come Arquata del Tronto e Cantiano elevate percentuali di over 65 sul totale della popolazione.
+La Tab. 1 mostra i `r tab_row` comuni con la popolazione over 65 più alta in termini assoluti, da cui si evince che Ancona e Pesaro sono i comuni più popolosi, e per tale ragione la popolazione anziana risulta essere in numero maggiore. La Tab. 2 mostra invece i 15 comuni con la popolazione over 65 maggiore in termini percentuali, mostrando in comuni come Arquata del Tronto e Cantiano elevate percentuali di over 65 sul totale della popolazione. In appendice sono riportati i dati per tutti i comuni
 
 ```{r mappa_over65, dpi=300, fig.width=5}
 
@@ -225,7 +225,7 @@ La spesa annuale del servizio ADI nel 2019 è stata di `r format(sum(db$adi_spes
 
 Le mappe seguenti indicano la presenza del servizio SAD nei diversi comuni (il servizio ADI non è stato mappato essendo molto limitato nella presenza). La dimensione delle bubbles indica il numero di utenti , e il colore il numero di anziani over 65 per i quali il servizio è particolarmente necessario.
 
-Le tabelle a seguire indicano: i comuni in cui è presente la SAD, i `r tab_row` comuni con più utenti SAD in proporzione alla popolazione, i `r tab_row` comuni con meno utenti SAD in proporzione alla popolazione, la spesa per la SAD in termini assoluti sulla popolazione anziana residente, per utente iscritto al servizio di assistenza domiciliare e per anziano considerando tutta la popolazione over 65 residente nel comune. Bisogna tener presente che `r sum(db$sad_utenti == 0)` su `r nrow(db)` non hanno alcun utente in SAD, e sono stati esclusi dalla tabella.
+Le tabelle a seguire mostrano: i comuni in cui è presente la SAD, i `r tab_row` comuni con più utenti SAD in proporzione alla popolazione, i `r tab_row` comuni con meno utenti SAD in proporzione alla popolazione, la spesa per la SAD in termini assoluti sulla popolazione anziana residente, per utente iscritto al servizio di assistenza domiciliare e per anziano considerando tutta la popolazione over 65 residente nel comune. Bisogna tener presente che `r sum(db$sad_utenti == 0)` su `r nrow(db)` non hanno alcun utente in SAD, e sono stati esclusi dalla tabella. In appendice sono riportati i dati per tutti i comuni con il servizio SAD attivo.
 
 ```{r mappa_adi_sad, dpi=300, fig.width=7, fig.height= 7}
 library(RColorBrewer)
@@ -311,7 +311,7 @@ tab %>%
   colformat_num(j = 4:7, big.mark = ".", decimal.mark = ",")
 ```
 
-La situazione descritta dalle tabelle e dalle mappe evidenzia una sfida significativa nella fornitura di servizi domiciliari adeguati per anziani, considerando l'alta percentuale di anziani per comune e l'alta prevalenza di malattie croniche[^4]. Ma un semplice aumento delle risorse per questi servizi non basta. Il modello di assistenza agli anziani necessita di un ripensamento fondamentale, che superi i tradizionali confini tra assistenza sanitaria e sociale. Una popolazione significativa di anziani soffre non solo di malattie, ma anche di isolamento e precarietà economica. Un'incisiva risposta a questi bisogni richiede un'efficace integrazione dei servizi sociali e sanitari. Oggi, questi due ambiti operano troppo spesso su traiettorie parallele e non convergenti, con il sistema sanitario sotto la responsabilità regionale e il sistema sociale a carico dei comuni. Questa divisione, pur logica a livello amministrativo, non tiene conto delle complesse necessità degli anziani. Interventi sociali mirati potrebbero prevenire ricoveri ospedalieri, riducendo così il carico sul sistema sanitario e migliorando la qualità della vita degli anziani. Ma tali interventi, sebbene generino dei costi dal punto di vista del sistema sociale,generano benefici maggiori dei costi per sistema sanitario. Per superare questo divario, è fondamentale l'implementazione di strategie di integrazione tra sociale e sanitario, offrendo un servizio territoriale che rispecchi questa visione condivisa e generi vantaggi sia per gli operatori del settore che per gli anziani stessi.
+La situazione descritta dalle tabelle e dalle mappe evidenzia una sfida significativa nella fornitura di servizi domiciliari adeguati per anziani, considerando l'alta percentuale di anziani per comune e l'alta prevalenza di malattie croniche[^4]. Ma un semplice aumento delle risorse per questi servizi non basta. Il modello di assistenza agli anziani necessita di un ripensamento fondamentale, che superi i tradizionali confini tra assistenza sanitaria e sociale. Una popolazione significativa di anziani soffre non solo di malattie, ma anche di isolamento e precarietà economica. Un'incisiva risposta a questi bisogni richiede un'efficace integrazione dei servizi sociali e sanitari. Oggi, questi due ambiti operano troppo spesso su traiettorie parallele e non convergenti, con il sistema sanitario sotto la responsabilità regionale e il sistema sociale a carico dei comuni. Questa divisione, pur logica a livello amministrativo, non tiene conto delle complesse necessità degli anziani. Interventi sociali mirati potrebbero prevenire ricoveri ospedalieri, riducendo così il carico sul sistema sanitario e migliorando la qualità della vita degli anziani. Ma tali interventi, sebbene generino dei costi dal punto di vista del sistema sociale, generano benefici rilevanti per il sistema sanitario, e quindi risparmi netti per la regione. Per superare questo divario, è fondamentale l'implementazione di strategie di integrazione tra sociale e sanitario, offrendo un servizio territoriale che rispecchi questa visione condivisa e generi vantaggi sia per gli operatori del settore che per gli anziani stessi.
 
 [^4]: Report regione marche. Migliorare la citazione
 
@@ -353,6 +353,8 @@ tm_shape(db_map1) + # il database con i dati
 
 ```
 
+\newpage
+
 ```{r tab_rsa}
 tab <- flextable(rsa_spesa)
 
@@ -380,8 +382,6 @@ tab %>%
   padding(padding.top = 0, padding.bottom = 0.5, part = "all") %>% 
  colformat_num(j = 3:7, big.mark = ".", decimal.mark = ",")
 ```
-
-\newpage
 
 ```{r tab_rsa_less}
 tab <- flextable(rsa_spesa_less)
@@ -411,13 +411,17 @@ tab %>%
 
 ```
 
-E' opportuna un'interpretazione corretta dei dati riguardanti la spesa per le RSA. Secondo alcuni analisti, in Italia il fabbisogno di posti in RSA è inferiore all'offerta, e pertanto sarebbe necessario aumentare le risorse messe a disposizione. Tuttavia, nell'ottica di offrire i servizi migliori, date le scarse risorse a disposizione, è necessario ripensare il ruolo delle RSA, in analogia rispetto a quello dell'ospedale. Ovvero è necessario utilizzare in modo appropriato le risorse disponibili e fornire una gamma completa di servizi nell'ambito del cd continuum assistenziale. 
+E' opportuna un'interpretazione corretta dei dati riguardanti la spesa per le RSA. Secondo alcuni analisti, in Italia il fabbisogno di posti in RSA è molto maggiore dell'offerta , e pertanto sarebbe necessario aumentare le risorse messe a disposizione[^5]. Tuttavia, nell'ottica di offrire i servizi migliori, date le scarse risorse a disposizione, è necessario ripensare il ruolo delle RSA, in analogia rispetto a quello dell'ospedale. Ovvero è necessario utilizzare in modo appropriato le risorse disponibili e fornire una gamma completa di servizi nell'ambito del cosiddetto *"continuum assistenziale"*[^6]. 
+
+[^5]: Inserire una reference. Se non sbaglio ci sono tutti i report del [Network Non Autosufficienza](https://www.luoghicura.it/le-pubblicazioni-di-nna/), l'osservatorio sulla [Long Term Care della Bocconi](https://cergas.unibocconi.eu/observatories/oltc_), e poi ho trovato [questa pubblicazione](http://www.grusol.it/apriSocialeN.asp?id=876) specifica sulle Marche in cui gli autori (che non so chi sono e se siano attendibili) lamentano proprio pochi posti letto in RSA
+
+[^6]: Anche qui sarebbe utile aggiungere qualche riga per spiegare cosa è il continuum assistenziale e possibilmente rimandare a qualche pubblicazione per approfondire
 
 L'obiettivo è ottimizzare l'uso delle RSA all'interno del sistema di assistenza e garantire l'accessibilità alle persone che ne hanno bisogno in condizioni cliniche che richiedono un ricovero a lungo termine. Allo stesso tempo, è importante evitare che gli anziani vengano ricoverati nelle RSA in modo permanente quando potrebbero essere curati adeguatamente a casa, con il supporto di servizi domiciliari appropriati. Una corretta valutazione delle esigenze degli anziani e una migliore coordinazione tra i diversi servizi sanitari e sociali, possono far sì che le RSA siano utilizzate in modo appropriato e che agli anziani sia destinata la giusta combinazione di cure e assistenza nel setting assistenziale più adeguato. Ciò può richiedere l'implementazione di team multidisciplinari che valutano le esigenze degli anziani e pianificano l'assistenza in modo individuale. 
 
-# L'impatto delle malattie croniche sul consumo di risorse ospedaliere
+# L'impatto delle malattie croniche non trasmissibili sul consumo di risorse ospedaliere
 
-Le malattie croniche (NCDs - Non Communicable Diseases)  sono condizioni che richiedono cure e gestione a lungo termine. Tra le malattie croniche più frequenti rientrano le malattie cardiache, diabete, ipertensione, malattie polmonari croniche, malattie renali croniche e demenze. Sulla base dei dati forniti dagli osservatori dell'ISS e dell' OMS, dai dati di Osserva Salute dell'Università Cattolica del Sacro Cuore, del sistema PASSI e PASSI d'ARGENTO, sono state  selezionate le seguenti patologie croniche che sono state riportate nella tabella 7.
+Le malattie croniche non trasmissibili (NCDs - Non Communicable Diseases)  sono condizioni che richiedono cure e gestione a lungo termine. Tra le malattie croniche più frequenti rientrano le malattie cardiache, diabete, ipertensione, malattie polmonari croniche, malattie renali croniche e demenze. Sulla base dei dati forniti dagli osservatori dell'ISS e dell' OMS, dai dati di Osserva Salute dell'Università Cattolica del Sacro Cuore, del sistema PASSI e PASSI d'ARGENTO, sono state  selezionate le seguenti patologie croniche che sono state riportate nella tabella 7.
 
 1.  Ipertensione
 
@@ -481,12 +485,12 @@ A causa della gravità di queste patologie e delle loro potenziali complicanze, 
 
 Di seguito sono elencate alcune possibili azioni per prevenire o ritardare queste patologie e ridurre i loro effetti più gravi:
 
-1.  **Promozione di uno stile di vita sano**: Un'azione fondamentale è promuovere uno stile di vita sano attraverso programmi di educazione sanitaria. Questi programmi dovrebbero includere consigli su una dieta equilibrata, l'importanza dell'attività fisica regolare, il controllo del peso, l'evitamento del fumo e il consumo moderato di alcol.
+1.  **Promozione di uno stile di vita sano**: Un'azione fondamentale è promuovere uno stile di vita sano attraverso programmi di promozione della salute. Questi programmi non devono limitarsi all'educazione sanitaria su una dieta equilibrata, l'importanza dell'attività fisica regolare, il controllo del peso, la riduzione del fumo e il consumo moderato di alcol, ma dovrebbero operare sul contesto dove vivono le persone per favorire il cambiamento dei comportamenti con programmi multi-livello che agiscono su diversi fattori del cambiamento a livello individuale e comunitario.
 2.  **Screening e diagnosi precoce**: Un'altra strategia importante è implementare programmi di screening e diagnosi precoce per identificare le persone a rischio o affette da queste patologie. Ad esempio, lo screening regolare della pressione sanguigna e dei livelli di glucosio nel sangue può individuare precocemente l'ipertensione e il diabete, consentendo interventi tempestivi.
 3.  **Accesso a cure primarie**: Garantire un accesso facile ed equo a cure primarie di qualità è cruciale per la gestione delle patologie croniche. I medici di base e gli operatori sanitari devono essere adeguatamente formati per la diagnosi, il trattamento e il monitoraggio delle patologie croniche, fornendo supporto continuo ai pazienti.
 4.  **Gestione multidisciplinare**: Adottare un approccio multidisciplinare nella gestione delle patologie croniche può migliorare i risultati e ridurre le complicanze. Un team composto da medici, infermieri, nutrizionisti, fisioterapisti, psicologi e altri professionisti può fornire un'assistenza integrata, personalizzata e continua.
 5.  **Utilizzo di tecnologie sanitarie**: Le tecnologie sanitarie come la telemedicina possono essere utilizzate per il monitoraggio a distanza dei pazienti, il controllo dei sintomi e la gestione delle terapie. Ciò consente un trattamento più tempestivo e riduce la necessità di ricoveri ospedalieri.
-6.  **Programmi di gestione del caso**: L'implementazione di programmi di gestione del caso può migliorare il coordinamento delle cure e la continuità dell'assistenza. Questi programmi coinvolgono un coordinatore del caso che si occupa della gestione globale delle cure del paziente, assicurando un'adeguata comunicazione tra i vari professionisti coinvolti.
+6.  **Programmi di gestione del caso**: L'implementazione di programmi di gestione del caso può migliorare il coordinamento delle cure e la continuità dell'assistenza. Questi programmi coinvolgono un coordinatore del caso che si occupa della gestione globale delle cure del paziente, assicurando un'adeguata comunicazione tra i vari professionisti coinvolti (si pensi alla figura dell'infermiere di comunità).
 7.  **Supporto all'autogestione**: Fornire ai pazienti le competenze necessarie per gestire in autonomia la propria malattia può contribuire a prevenire complicanze e ridurre i ricoveri. L'educazione sulle patologie, l'addestramento all'autosomministrazione dei farmaci e il supporto psicologico possono fare la differenza nella gestione quotidiana della malattia.
 8.  **Collaborazione tra settori**: È importante promuovere la collaborazione tra settori, sanità, assistenza sociale, istruzione e ambiente. Un approccio intersettoriale può affrontare i determinanti sociali e ambientali della salute, creando un ambiente favorevole alla prevenzione e alla gestione delle patologie croniche.
 
@@ -535,16 +539,17 @@ Sia nei comuni con il più alto costo a cittadino, che in quelli con il più alt
 
 ## I comuni con più ospedalizzazioni a parità di anziani
 
-La domanda di questi servizi è associata all'età media della popolazione, ovvero alla proporzione di anziani nei comuni. Il grafico seguente mostra la correlazione tra la proporzione di anziani e costo a cittadino per i ricoveri associati a NCDs per comune, mentre la tabella seguente mostra il risultato di una regressione lineare multivariabile che include anche il reddito medio per comune (altra variabile che potrebbe essere associata ad un peggiore stato di salute). La regressione è stata eseguita solo con i comuni con una popolazione maggiore di 2000 abitanti.
+La domanda di questi servizi è associata all'età media della popolazione, ovvero alla proporzione di anziani nei comuni. Il grafico seguente mostra la correlazione tra la proporzione di anziani e costo a cittadino per i ricoveri associati a NCDs per comune, mentre la tabella seguente mostra il risultato di una regressione lineare multivariabile che include anche il reddito medio per comune (altra variabile che potrebbe essere associata ad un peggiore stato di salute). La regressione è stata eseguita solo con i comuni con una popolazione maggiore di 2.000 abitanti.
 
-```{r graf_regressione_ricoveri_anziani, dpi=300}
+```{r graf_regressione_ricoveri_anziani, dpi=300, fig.width=7}
 
 ggplot(db_r, aes(x=perc_65, y=perc_ricoveri_c_pop)) + 
   geom_point() + 
   geom_smooth(method=lm, se=TRUE, color="red", fill="pink") + # Aggiunge una linea di regressione con intervallo di confidenza
   theme_minimal() +
-  labs(x = "Proporzione di persone over 65", y = "Costo procapite ricoveri NCDs",
-       title = "Figura 6. Scatter plot con linea di regressione, proporzione di anziani e costo ricoveri NCDs") +
+  labs(x = "Proporzione di persone over 65", y = "Costo procapite ricoveri NCDs", title= "Figura 6. Scatter plot per proporzione di anziani e costo ricoveri NCDs"
+       ) +
+  theme(plot.title = element_text(size = 10)) +
   annotate("text", x = min(db_r$perc_65) + 0.02, y = max(db_r$perc_ricoveri_c_pop) - 0.02,
            label = paste("R-squared =", r.squared))
 
@@ -564,13 +569,35 @@ tab %>%
   padding(padding.top = 0, padding.bottom = 0.5, part = "all") 
 ```
 
-I punti indicano i comuni, la linea di regressione crescente indica che in effetti, all'aumentare della proporzione di anziani, aumenta il costo a cittadino per i ricoveri associati alle NCDs, ma il coefficiente R-squared ci dice che solo il `r percent(r.squared, accuracy = 0.01)` della variabilità è spiegata dall'età media della popolazione. Ci sono quindi dei comuni che a partità di anziani hanno più o meno ricoveri. In altre parole ci sono molti altri fattori correlati alla domanda di servizi ospedalieri legati a queste patologie su cui si può intervenire per ridurla.
+I punti indicano i comuni, la linea di regressione crescente indica che in effetti, all'aumentare della proporzione di anziani, aumenta il costo a cittadino per i ricoveri associati alle NCDs, ma il coefficiente R-squared ci dice che solo il `r percent(r.squared, accuracy = 0.01)` della variabilità è spiegata dall'età media della popolazione. Ci sono quindi dei comuni che a parità di anziani hanno più o meno ricoveri. In altre parole ci sono molti altri fattori correlati alla domanda di servizi ospedalieri legati a queste patologie su cui si può intervenire per ridurla.
 
 Le tabelle seguenti mostrano i `r tab_row` comuni che si discostano maggiormente dal valore atteso in positivo e in negativo.
 
 I primi sono quelli che a parità di anziani hanno generano un costo maggiore a cittadino, quindi dove è possibile intervenire con programmi di prevenzione e servizi territoriali/domiciliari, generando dei risparmi. I secondi, al contrario, sono quelli che a parità di anziani generano un costo inferiore, e sarebbe interessante vedere quali potrebbero essere le cause del minor accesso all'ospedale (migliore stato di salute della popolazione? Migliori servizi?)
 
-La mappa mostra questi comuni rispettivamente in rosso e in verde
+La mappa mostra questi comuni rispettivamente in rosso e in verde. In appendice sono riportati i dati per tutti i comuni delle Marche.
+
+```{r mappa_residui, dpi=300, fig.width=5}
+# Factorize your "col" column with custom labels
+db_map_res_c$col <- factor(db_map_res_c$col, 
+                         levels = c("red", "green", "Na"), 
+                         labels = c("Più ricoveri", "Meno ricoveri", ""))
+
+tmap_mode("plot")
+tm_shape(db_map_res) + # il database con i dati
+  tm_polygons("col", # il dato da mappare
+              palette = c("red", "green", "white"), # set colors for different categories
+              missing = "white", # set color for NA
+              title = "Comuni con più o meno spesa per ricoveri NCD rispetto a valore atteso",
+              border.lwd = 0.5) +
+  tm_shape(italy_province) + # Aggiungi i confini delle province
+  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
+  tm_layout(main.title = "Figura 7. Comuni con più ricoveri (rossi) e meno ricoveri \n (verdi) a parità di anziani", main.title.size = 0.6,
+    legend.show = F) # Reposition the legend
+
+```
+
+\newpage
 
 ```{r tab_comuni_malati}
 tab <- resid_plus_c %>% select(-cod_istat)
@@ -586,7 +613,7 @@ tab <- set_header_labels(tab,
                                  perc_ricoveri_c_pop = "Spesa procapite per ricoveri NCDs",
                          over65 = "N. anziani (over 65)")
 
-tab <- set_caption(tab, caption = paste0("I top", tab_row, " comuni che a parità di anziani generano un costo maggiore a cittadino per ricoveri associati a NCDs"))
+tab <- set_caption(tab, caption = paste0("I top ", tab_row, " comuni che a parità di anziani generano un costo maggiore a cittadino per ricoveri associati a NCDs"))
 
 tab %>%  
   theme_zebra() %>% 
@@ -611,7 +638,7 @@ tab <- set_header_labels(tab,
                                  perc_ricoveri_c_pop = "Spesa procapite per ricoveri NCDs",
                          over65 = "N. anziani (over 65)")
 
-tab <- set_caption(tab, caption = paste0("I top", tab_row, " comuni che a parità di anziani generano un costo minore a cittadino per ricoveri associati a NCDs"))
+tab <- set_caption(tab, caption = paste0("I top ", tab_row, " comuni che a parità di anziani generano un costo minore a cittadino per ricoveri associati a NCDs"))
 
 tab %>%  
   theme_zebra() %>% 
@@ -621,24 +648,163 @@ tab %>%
  colformat_num(j = 3:4, big.mark = ".", decimal.mark = ",")
 ```
 
-```{r mappa_residui, dpi=300, fig.width=5}
-# Factorize your "col" column with custom labels
-db_map_res_c$col <- factor(db_map_res_c$col, 
-                         levels = c("red", "green", "Na"), 
-                         labels = c("Più ricoveri", "Meno ricoveri", ""))
+# L'impatto delle malattie croniche sulla spesa farmaceutica
 
-tmap_mode("plot")
-tm_shape(db_map_res) + # il database con i dati
-  tm_polygons("col", # il dato da mappare
-              palette = c("red", "green", "white"), # set colors for different categories
-              missing = "white", # set color for NA
-              title = "Comuni con più o meno spesa per ricoveri NCD rispetto a valore atteso",
-              border.lwd = 0.5) +
-  tm_shape(italy_province) + # Aggiungi i confini delle province
-  tm_borders(lwd = 1.5, col = "darkgreen", alpha = 0.5) + # personalizza lo spessore, il colore e la trasparenza dei confini
-  tm_layout(main.title = "Figura 7. Comuni con più ricoveri (rossi) e meno ricoveri (verdi) a parità di anziani", main.title.size = 0.7,
-    legend.show = F) # Reposition the legend
+Nel contesto sanitario, l'analisi della spesa farmaceutica rappresenta un indice cruciale per la valutazione del peso economico associato alle malattie croniche non trasmissibili. Queste ultime, infatti, influenzano in maniera significativa l'allocazione delle risorse, avendo un impatto maggiore sulla spesa per i farmaci rispetto a quella per i ricoveri ospedalieri. In questo senso, la spesa farmaceutica costituisce un termometro attendibile del carico di malattia a livello territoriale.
+
+Un elemento da non sottovalutare è l'importanza economica della spesa farmaceutica nel bilancio complessivo della Regione Marche. Le cifre presentate nella tabella, espresse in milioni di euro, riflettono una spesa totale di 551,37 milioni di euro all'anno, con un quota di spesa associata alle NCDs pari al 18,17% del totale. Tale percentuale enfatizza la rilevanza economica delle malattie croniche non trasmissibili nel contesto sanitario regionale e l'urgenza di sviluppare strategie efficaci per la loro prevenzione e gestione.
+
+Osservando la tabella seguente emerge che l'ipertensione genera un costo notevole, in particolare nel settore farmaceutico territoriale. Allo stesso modo, malattie come l'asma e la BPCO, il diabete e l'insufficienza renale cronica non dialitica, pur rappresentando una quota più piccola della spesa complessiva, richiedono un attento monitoraggio e un'efficace gestione delle risorse, data la loro incidenza e la cronicità del trattamento.
+
+Se avessimo a disposizione dati dettagliati per comune, potremmo calcolare la spesa procapite a cittadino, un indice che ci permetterebbe di identificare i comuni che spendono di più e quindi quelli che avrebbero più bisogno di interventi mirati per ridurre il peso di queste malattie e il relativo costo. Questa informazione sarebbe di vitale importanza per la pianificazione di politiche sanitarie efficaci e per l'allocazione ottimale delle risorse. Inoltre, potrebbe contribuire alla creazione di un sistema sanitario più equo ed efficiente, con un forte focus sulla prevenzione delle malattie croniche e sul miglioramento della gestione delle stesse.
+
+```{r tab_farmaceutica}
+tab <- flextable(costi_farma)
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         malattia = "Malattia",
+                         ospedale = "Farmaceutica ospedaliera",
+                         territorio = "Farmaceutica territoriale"
+                                 )
+tab %>%  
+  theme_zebra() %>% 
+  autofit() %>% 
+  fontsize(size = 9, part = "body") %>% 
+  padding(padding.top = 0, padding.bottom = 0.5, part = "all") 
 
 ```
 
-# L'impatto delle malattie croniche sulla spesa farmaceutica
+# Prossimi sviluppi della ricerca e dati necessari
+
+La ricerca nei prossimi mese prevede di esplorare nuove aree di indagine. Un aspetto che intendiamo analizzare è la spesa farmaceutica per comune. Questa analisi potrebbe fornire indicazioni preziose su dove intervenire con misure di prevenzione primaria, secondaria o terziaria, liberando risorse economiche e generando al contempo guadagni di salute. Tuttavia, per condurre un'analisi accurata, avremmo bisogno di dati non anonimizzati sulla spesa farmaceutica, inclusi i dettagli sul comune di residenza del paziente.
+
+Un altro aspetto che intendiamo esaminare sono gli accessi inappropriati al pronto soccorso, identificati dall'OMS come una delle principali cause di spreco nel settore sanitario. Individuare e rimuovere le cause di questi accessi inappropriati rappresenta un intervento altamente efficiente dal punto di vista economico e sanitario.
+
+Inoltre, vorremmo estendere la nostra analisi dei servizi ADI, SAD ed RSA, che finora si è basata sui dati ISTAT. L'accesso ai dati forniti dalla regione Marche ci permetterebbe di confermare o rivedere le nostre conclusioni.
+
+Una volta completata l'analisi dei problemi, la ricerca entrerà in una seconda fase, focalizzata sull'identificazione di interventi che hanno dimostrato la loro efficacia ed efficienza nel prevenire e trattare le patologie con il più alto onere di salute ed economico. In questa fase, evidenzieremo gli elementi facilitatori e gli ostacoli da considerare per garantire l'implementazione di tali interventi.
+
+Un possibile sviluppo futuro potrebbe essere la progettazione di un intervento pilota in alcuni comuni della regione Marche, in particolare nei comuni del cratere del terremoto. Quest'area, ben delimitata e con un alto numero di anziani e un forte bisogno di servizi territoriali, rappresenta un contesto ideale per testare questi interventi.
+
+Per procedere con queste analisi, avremmo bisogno dei seguenti dati: i dati della spesa farmaceutica con l'indicazione del comune di residenza del paziente; i dati disaggregati sugli accessi al pronto soccorso, con l'indicazione della causa di accesso; e i dati sulle figure professionali di carattere sociale in carico alla regione o ai comuni, che potrebbero essere impiegate nello sviluppo di programmi innovativi di medicina di prossimità.
+
+\newpage
+
+# Appendice
+
+```{r tab_perc_anziani_full}
+tab <- flextable(perc_anziani_full)
+
+# Format the proportion column as a percentage with 1 digit
+tab <- compose(tab, 
+                       j = "perc_65",
+                       value = as_paragraph(percent(perc_65, accuracy = 0.1)))
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 popolazione = "Popolazione Totale", 
+                                 over65 = "Anziani over 65", 
+                                 perc_65 = "Proporzione over 65")
+
+#Add the caption
+tab <- set_caption(tab, caption = "I comuni delle marche ordinati per proporzione di over 65 sul totale della popolazione")
+
+# Adjust the table
+tab %>%  
+  theme_zebra() %>% 
+  autofit() %>% 
+  fontsize(size = 9, part = "body") %>% 
+  padding(padding.top = 0, padding.bottom = 0.5, part = "all") %>% 
+  colformat_num(j = 4:5, big.mark = ".")
+```
+
+\newpage
+
+```{r tab_sad_full}
+# Create a FlexTable object
+tab <- flextable(perc_sad_full)
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 sad_utenti = "Utenti SAD", 
+                                 sad_spesa_tot = "Spesa per SAD", 
+                                 sad_spesa_anziano = "Spesa SAD per anziano",
+                                 sad_spesa_utente = "Spesa SAD per utente",
+                         over65 = "N. anziani (over 65)")
+
+#Add the caption
+tab <- set_caption(tab, caption = "I comuni delle marche ordinati per utenti SAD su popolazione over 65")
+
+# Sistemare la tabella 
+tab %>%  
+  theme_zebra() %>% 
+  autofit() %>% 
+  fontsize(size = 9, part = "body") %>% 
+  padding(padding.top = 0, padding.bottom = 0.5, part = "all") %>% 
+  colformat_num(j = 4:7, big.mark = ".", decimal.mark = ",")
+```
+
+\newpage
+
+```{r tab_rsa_full}
+tab <- flextable(rsa_spesa_full)
+
+
+# Format the proportion column as a percentage with 1 digit
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 rsa_utenti = "Utenti RSA", 
+                                 rsa_spesa_tot = "Spesa totale per RSA", 
+                                 rsa_spesa_anziano = "Spesa RSA per anziano",
+                                 rsa_spesa_utente = "Spesa RSA per utente",
+                         over65 = "N. anziani (over 65)")
+
+#Add the caption
+tab <- set_caption(tab, caption = "I comuni delle marche ordinati per spesa per RSA per cittadino over 65")
+
+# Sistemo la tabella 
+tab %>%  
+  theme_zebra() %>% 
+  autofit() %>% 
+  fontsize(size = 9, part = "body") %>% 
+  padding(padding.top = 0, padding.bottom = 0.5, part = "all") %>% 
+ colformat_num(j = 3:7, big.mark = ".", decimal.mark = ",")
+
+```
+
+\newpage
+
+```{r tab_spesa_rivoceri_ncds}
+
+tab <- flextable(ncd_osp_full)
+
+# Modify the header names
+tab <- set_header_labels(tab, 
+                         row_order = "N.",
+                                 territorio = "Comune", 
+                                 popolazione = "Popolazione", 
+                                 perc_65 = "Proporzione anziani over 65", 
+                                 ricoveri_pat = "N. ricoveri per NCDs",
+                         ricoveri_totali_c = "Spesa totale per ricoveri NCDs",
+                                 perc_ricoveri_c_pop = "Spesa procapite per ricveri NCDs",
+                         over65 = "N. anziani (over 65)")
+
+tab <- set_caption(tab, caption = "I comuni delle marche ordinati per spesa procapite per ricoveri associati a NCDs")
+
+tab %>%  
+  theme_zebra() %>% 
+  autofit() %>% 
+  fontsize(size = 9, part = "body") %>% 
+  padding(padding.top = 0, padding.bottom = 0.5, part = "all") %>% 
+ colformat_num(j = 3:4, big.mark = ".", decimal.mark = ",") %>% 
+  colformat_num(j = 6:7, big.mark = ".", decimal.mark = ",")
+
+```
