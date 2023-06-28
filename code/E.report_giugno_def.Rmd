@@ -7,6 +7,7 @@ output:
     reference_docx: reference.docx
     toc: yes
 date: "`r Sys.Date()`"
+bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -64,21 +65,15 @@ Le tabelle che riportano i dati sui comuni delle Marche escludono i comuni con m
 
 \newpage
 
-# I bisogni di salute nelle marche: la sfida dell'invecchiamento della popolazione.
+# I bisogni di salute nelle Marche: la sfida dell'invecchiamento della popolazione.
 
-Nella regione Marche ci sono `r formatC(tot_popolazione, big.mark=".")` residenti distribuiti su `r nrow(db)` comuni con una popolazione media di `r formatC(media_comune, big.mark=".", decimal.mark=",")` persone a comune. In totale `r n_1000` comuni hanno meno di 1.000 abitanti[^1].
+Nella regione Marche ci sono `r formatC(tot_popolazione, big.mark=".")` residenti distribuiti su `r nrow(db)` comuni con una popolazione media di `r formatC(media_comune, big.mark=".", decimal.mark=",")` persone a comune. In totale `r n_1000` comuni hanno meno di 1.000 abitanti [@istat2020].
 
-[^1]: Dati censimento ISTAT 2020
-
-La presenza degli anziani nei vari comuni è un dato importante per stimare i principali bisogni di salute, che comportano anche aumento del carico sui servizi sanitari, perché l'aumento dell'età è associato ad un aumento di patologie croniche non trasmissibili, che per la loro durata e la lunghezza della storia naturale, sono molto costose da trattare. Tuttavia si tratta anche di malattie prevenibili, per le quali esistono soluzioni in grado di ritardarne l'insorgenza, lo sviluppo di conseguenze più gravi, o consentire a chi ne affetto di conviverci con una qualità della vita accettabile. Per queste patologie il sistema ospedalocentrico si è rivelato poco efficace ed efficiente[^2]. E' quindi importante programmare ed organizzare i servizi territoriali ponendo al centro la persona, al fine di migliorare la salute delle persone affette da cronicità. Per fare ciò è necessario rendere più efficaci ed efficienti i servizi sanitari territoriali in termini di prevenzione e assistenza assicurando uniformità ed equità di accesso a tutti i cittadini[^3].
-
-[^2]: Se possibile inserire citazione per questa affermazione
-
-[^3]: Piano nazionale delle Cronicità (sistemare citazione)
+La presenza degli anziani nei vari comuni è un dato importante per stimare i principali bisogni di salute, che comportano anche aumento del carico sui servizi sanitari, perché l'aumento dell'età è associato ad un aumento di patologie croniche non trasmissibili, che per la loro durata e la lunghezza della storia naturale, sono molto costose da trattare. Tuttavia si tratta anche di malattie prevenibili, per le quali esistono soluzioni in grado di ritardarne l'insorgenza, lo sviluppo di conseguenze più gravi, o consentire a chi ne è affetto di conviverci con una qualità della vita accettabile. Per queste patologie il sistema ospedalocentrico si è rivelato poco efficace ed efficiente. E' quindi importante programmare ed organizzare i servizi territoriali ponendo al centro la persona, al fine di migliorare la salute delle persone affette da cronicità. Per fare ciò è necessario rendere più efficaci ed efficienti i servizi sanitari territoriali in termini di prevenzione e assistenza assicurando uniformità ed equità di accesso a tutti i cittadini [@direzionegeneraledellaprogrammazionesanitaria2016].
 
 Nel 2020 (anno dell'ultimo censimento ISTAT), nelle Marche erano presenti `r formatC(tot_over65, big.mark=".")` residenti con più di 65 anni, pari al `r percent(tot_perc65, accuracy = 0.01)` della popolazione, e `r formatC(tot_over80, big.mark=".")` residenti con più di 80 anni, pari al `r percent(tot_perc80, accuracy = 0.01)` della popolazione.
 
-Le mappe e le tabelle seguenti mostrano i comuni con più anziani nella regione, sia in termini assoluti che in proporzione alla popolazione. I nomi dei comuni riportati nella mappe rappresentano i primi 10 per invecchiamento della popolazione in termini assoluti o relativi alla popolisità del comune.
+Le mappe e le tabelle seguenti mostrano i comuni con più anziani nella regione, sia in termini assoluti che in proporzione alla popolazione. I nomi dei comuni riportati nella mappe rappresentano i primi 10 per invecchiamento della popolazione in termini assoluti o relativi alla popolosità del comune.
 
 La Tab. 1 mostra i `r tab_row` comuni con la popolazione over 65 più alta in termini assoluti, da cui si evince che Ancona e Pesaro sono i comuni più popolosi, e per tale ragione la popolazione anziana risulta essere in numero maggiore. La Tab. 2 mostra invece i 15 comuni con la popolazione over 65 maggiore in termini percentuali, mostrando in comuni come Arquata del Tronto e Cantiano elevate percentuali di over 65 sul totale della popolazione. In appendice sono riportati i dati per tutti i comuni
 
@@ -205,7 +200,7 @@ tab %>%
 
 In termini di programmazione di salute pubblica è necessario osservare sia il numero assoluto di anziani che la proporzione rispetto alla popolazione, per comprendere dove intervenire e come migliorare l'organizzazione dei servizi sanitari territoriali, soprattutto in considerazione della distribuzione geografica dei comuni che si evince dalle carte annesse alle tabelle. Ad esempio, i comuni di Ascoli Piceno e Falconara Marittima sono due comuni in cui la percentuale di popolazione over 65, rispetto alla popolazione totale è rilevante sia in termini assoluti che in termini percentuali. Questo dato ci suggerisce l'importanza di intervenire in comuni difficili da raggiungere come ad esempio le aree montane, che possono presentare sfide uniche per l'organizzazione dei servizi sanitari territoriali. Le caratteristiche geografiche, come le strade tortuose, le infrastrutture limitate e la scarsa densità di popolazione, possono rendere difficile l'accesso ai servizi sanitari e limitare la mobilità dei cittadini. Tuttavia, ci sono diverse strategie che possono essere adottate per affrontare queste sfide specifiche, come ad esempio:
 
-1.  **Telemedicina**. La telemedicina rappresenta un'opzione preziosa per le aree di montagna, consentendo ai cittadini di accedere ai servizi sanitari senza la necessità di spostarsi fisicamente. La teleconsultazione, ad esempio, consente ai pazienti di comunicare con i medici tramite videoconferenza, fornendo diagnosi e consulenze a distanza;
+1.  **Telemedicina**. La telemedicina rappresenta un'opzione preziosa per le aree di montagna, consentendo ai cittadini di accedere ai servizi sanitari senza la necessità di spostarsi fisicamente. La teleconsultazione, ad esempio, consente ai pazienti di comunicare con i medici tramite videoconferenza, fornendo diagnosi e consulenze a distanza [@martinelli2020; @ting2021];
 
 2.  **Centri sanitari mobili**. L'utilizzo di centri sanitari mobili può essere una soluzione efficace per raggiungere le comunità di montagna e fornire servizi sanitari di base. Questi centri possono essere attrezzati con personale medico, attrezzature diagnostiche (point-of-care)  e farmaci essenziali per fornire cure primarie direttamente alle comunità più remote;
 
@@ -311,9 +306,7 @@ tab %>%
   colformat_num(j = 4:7, big.mark = ".", decimal.mark = ",")
 ```
 
-La situazione descritta dalle tabelle e dalle mappe evidenzia una sfida significativa nella fornitura di servizi domiciliari adeguati per anziani, considerando l'alta percentuale di anziani per comune e l'alta prevalenza di malattie croniche[^4]. Ma un semplice aumento delle risorse per questi servizi non basta. Il modello di assistenza agli anziani necessita di un ripensamento fondamentale, che superi i tradizionali confini tra assistenza sanitaria e sociale. Una popolazione significativa di anziani soffre non solo di malattie, ma anche di isolamento e precarietà economica. Un'incisiva risposta a questi bisogni richiede un'efficace integrazione dei servizi sociali e sanitari. Oggi, questi due ambiti operano troppo spesso su traiettorie parallele e non convergenti, con il sistema sanitario sotto la responsabilità regionale e il sistema sociale a carico dei comuni. Questa divisione, pur logica a livello amministrativo, non tiene conto delle complesse necessità degli anziani. Interventi sociali mirati potrebbero prevenire ricoveri ospedalieri, riducendo così il carico sul sistema sanitario e migliorando la qualità della vita degli anziani. Ma tali interventi, sebbene generino dei costi dal punto di vista del sistema sociale, generano benefici rilevanti per il sistema sanitario, e quindi risparmi netti per la regione. Per superare questo divario, è fondamentale l'implementazione di strategie di integrazione tra sociale e sanitario, offrendo un servizio territoriale che rispecchi questa visione condivisa e generi vantaggi sia per gli operatori del settore che per gli anziani stessi.
-
-[^4]: Report regione marche. Migliorare la citazione
+La situazione descritta dalle tabelle e dalle mappe evidenzia una sfida significativa nella fornitura di servizi domiciliari adeguati per anziani, considerando l'alta percentuale di anziani per comune (Tab. 11) e l'alta prevalenza di malattie croniche (Tab. 7). Ma un semplice aumento delle risorse per questi servizi non basta. Il modello di assistenza agli anziani necessita di un ripensamento fondamentale, che superi i tradizionali confini tra assistenza sanitaria e sociale. Una popolazione significativa di anziani soffre non solo di malattie, ma anche di isolamento e precarietà economica. Un'incisiva risposta a questi bisogni richiede un'efficace integrazione dei servizi sociali e sanitari. Oggi, questi due ambiti operano troppo spesso su traiettorie parallele e non convergenti, con il sistema sanitario sotto la responsabilità regionale e il sistema sociale a carico dei comuni. Questa divisione, pur logica a livello amministrativo, non tiene conto delle complesse necessità degli anziani. Interventi sociali mirati potrebbero prevenire ricoveri ospedalieri, riducendo così il carico sul sistema sanitario e migliorando la qualità della vita degli anziani. Ma tali interventi, sebbene generino dei costi dal punto di vista del sistema sociale, generano benefici rilevanti per il sistema sanitario, e quindi risparmi netti per la regione. Per superare questo divario, è fondamentale l'implementazione di strategie di integrazione tra sociale e sanitario, offrendo un servizio territoriale che rispecchi questa visione condivisa e generi vantaggi sia per gli operatori del settore che per gli anziani stessi.
 
 # I servizi territoriali residenziali: le RSA
 
@@ -411,11 +404,7 @@ tab %>%
 
 ```
 
-E' opportuna un'interpretazione corretta dei dati riguardanti la spesa per le RSA. Secondo alcuni analisti, in Italia il fabbisogno di posti in RSA è molto maggiore dell'offerta , e pertanto sarebbe necessario aumentare le risorse messe a disposizione[^5]. Tuttavia, nell'ottica di offrire i servizi migliori, date le scarse risorse a disposizione, è necessario ripensare il ruolo delle RSA, in analogia rispetto a quello dell'ospedale. Ovvero è necessario utilizzare in modo appropriato le risorse disponibili e fornire una gamma completa di servizi nell'ambito del cosiddetto *"continuum assistenziale"*[^6]. 
-
-[^5]: Inserire una reference. Se non sbaglio ci sono tutti i report del [Network Non Autosufficienza](https://www.luoghicura.it/le-pubblicazioni-di-nna/), l'osservatorio sulla [Long Term Care della Bocconi](https://cergas.unibocconi.eu/observatories/oltc_), e poi ho trovato [questa pubblicazione](http://www.grusol.it/apriSocialeN.asp?id=876) specifica sulle Marche in cui gli autori (che non so chi sono e se siano attendibili) lamentano proprio pochi posti letto in RSA
-
-[^6]: Anche qui sarebbe utile aggiungere qualche riga per spiegare cosa è il continuum assistenziale e possibilmente rimandare a qualche pubblicazione per approfondire
+E' opportuna un'interpretazione corretta dei dati riguardanti la spesa per le RSA. Secondo alcuni analisti, in Italia il fabbisogno di posti in RSA è molto maggiore dell'offerta , e pertanto sarebbe necessario aumentare le risorse messe a disposizione [@indagine2012]. Tuttavia, nell'ottica di offrire i servizi migliori, date le scarse risorse a disposizione, è necessario ripensare il ruolo delle RSA, in analogia rispetto a quello dell'ospedale. Ovvero è necessario utilizzare in modo appropriato le risorse disponibili e fornire una gamma completa di servizi nell'ambito del cosiddetto *"continuum assistenziale"*. 
 
 L'obiettivo è ottimizzare l'uso delle RSA all'interno del sistema di assistenza e garantire l'accessibilità alle persone che ne hanno bisogno in condizioni cliniche che richiedono un ricovero a lungo termine. Allo stesso tempo, è importante evitare che gli anziani vengano ricoverati nelle RSA in modo permanente quando potrebbero essere curati adeguatamente a casa, con il supporto di servizi domiciliari appropriati. Una corretta valutazione delle esigenze degli anziani e una migliore coordinazione tra i diversi servizi sanitari e sociali, possono far sì che le RSA siano utilizzate in modo appropriato e che agli anziani sia destinata la giusta combinazione di cure e assistenza nel setting assistenziale più adeguato. Ciò può richiedere l'implementazione di team multidisciplinari che valutano le esigenze degli anziani e pianificano l'assistenza in modo individuale. 
 
@@ -483,7 +472,7 @@ Come risulta evidente dai dati riportati nella tabella 7, la cardiopatia ischemi
 
 A causa della gravità di queste patologie e delle loro potenziali complicanze, i pazienti affetti possono richiedere ricoveri ospedalieri per la gestione delle complicanze, con un impatto significativo sui costi sanitari. Tuttavia, è importante sottolineare che una gestione adeguata di queste patologie, compresa una diagnosi precoce, un trattamento appropriato e un monitoraggio regolare, può contribuire a ridurre il numero di ricoveri ospedalieri e a contenere i costi associati.
 
-Di seguito sono elencate alcune possibili azioni per prevenire o ritardare queste patologie e ridurre i loro effetti più gravi:
+Di seguito sono elencate alcune possibili azioni per prevenire o ritardare queste patologie e ridurre i loro effetti più gravi, come inoltre indicato dal Piano Nazionale della Prevenzione [@direzionegeneraledellaprogrammazionesanitaria].
 
 1.  **Promozione di uno stile di vita sano**: Un'azione fondamentale è promuovere uno stile di vita sano attraverso programmi di promozione della salute. Questi programmi non devono limitarsi all'educazione sanitaria su una dieta equilibrata, l'importanza dell'attività fisica regolare, il controllo del peso, la riduzione del fumo e il consumo moderato di alcol, ma dovrebbero operare sul contesto dove vivono le persone per favorire il cambiamento dei comportamenti con programmi multi-livello che agiscono su diversi fattori del cambiamento a livello individuale e comunitario.
 2.  **Screening e diagnosi precoce**: Un'altra strategia importante è implementare programmi di screening e diagnosi precoce per identificare le persone a rischio o affette da queste patologie. Ad esempio, lo screening regolare della pressione sanguigna e dei livelli di glucosio nel sangue può individuare precocemente l'ipertensione e il diabete, consentendo interventi tempestivi.
@@ -688,6 +677,11 @@ Una volta completata l'analisi dei problemi, la ricerca entrerà in una seconda 
 Un possibile sviluppo futuro potrebbe essere la progettazione di un intervento pilota in alcuni comuni della regione Marche, in particolare nei comuni del cratere del terremoto. Quest'area, ben delimitata e con un alto numero di anziani e un forte bisogno di servizi territoriali, rappresenta un contesto ideale per testare questi interventi.
 
 Per procedere con queste analisi, avremmo bisogno dei seguenti dati: i dati della spesa farmaceutica con l'indicazione del comune di residenza del paziente; i dati disaggregati sugli accessi al pronto soccorso, con l'indicazione della causa di accesso; e i dati sulle figure professionali di carattere sociale in carico alla regione o ai comuni, che potrebbero essere impiegate nello sviluppo di programmi innovativi di medicina di prossimità.
+
+# Bibliografia
+
+::: {#refs}
+:::
 
 \newpage
 
