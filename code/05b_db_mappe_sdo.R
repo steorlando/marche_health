@@ -24,7 +24,7 @@ variabili <- c("ipertensione",
 
 risultati_somma <- somma(sintesi_sdo, variabili)
 
-db <- left_join(db, risultati_somma, by = "cod_istat", all.x = T)
+db <- left_join(db, risultati_somma, by = "cod_istat")
 
 
 # Calcolo variabili aggregate

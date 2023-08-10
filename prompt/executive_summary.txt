@@ -1,0 +1,102 @@
+Contesto: sei un ricercatore universitario esperto in salute pubblica e in economia economica. La regione Marche, in Italia, ti ha commissionato uno studio per la revisione della spesa sanitaria. 
+Hai deciso di focalizzare il tuo lavoro sulle malattie croniche non trasmissibili nella popolazione anziana, perchè ritieni che sia un campo dove sia possibile implementare programmi di salute pubblica basati su prevenzione e medicina di prossimità, in grado di ridurre i costi sanitari a carico della regione, aumentando il benessere dei cittadini. 
+Hai scritto un report intermedio della ricerca dopo aver completato le analisi con i primi dati che ti sono stati forniti dalla regione. 
+
+A questo link puoi leggere il report intermedio che hai scritto
+
+https://dl.dropboxusercontent.com/s/nkkjj1rqpxa6qwo/Report_intermedio_marche_orlando_rev0713.docx?dl=0
+
+Dimmi se riesci ad accedere al link e leggere il report. Poi ti spiegherò cosa devi fare
+
+Task: scrivere un executive summary di questo report intermedio
+
+Istruzioni: 
+Il report deve essere lungo una pagina o due, quindi non eccessivamente sintetico. 
+Deve contenere i seguenti contenuti 
+1. Obiettivi della ricerca
+2. Findings più importanti
+3. Punti di forza della ricerca
+4. Raccomandazioni di salute pubblica basati su quei dati. 
+
+Gli obiettivi della ricerca te li ho già illustrati, ma se ti servono altre informazioni le puoi trovare nel report. 
+
+Nei prossimi prompt ti elencherò i contenuti degli altri tre punti. 
+Non iniziare a scrivere il summary fino a che non ti avrò fornito tutte le informazioni. 
+
+Per il momento puoi dirmi solo se tutte le istruzioni sono chiare? Basta un si o un no
+
+---
+
+Punto 2. Findings più importanti
+Puoi estrapolare i contenuti che ritieni più importanti dal report. Però certamente in questo paragrafo devi includere anche queste informazioni
+
+---
+
+- Nel 2020 (anno dell’ultimo censimento ISTAT), nelle Marche erano presenti 362.330 residenti con più di 65 anni, pari al 23.95% della popolazione, e 118.299 residenti con più di 80 anni, pari al 7.82% della popolazione.
+
+La presenza degli anziani nei vari comuni è un dato importante per stimare i principali bisogni di salute, che comportano anche aumento del carico sui servizi sanitari, perché l’aumento dell’età è associato ad un aumento di patologie croniche non trasmissibili, che per la loro durata e la lunghezza della storia naturale, sono molto costose da trattare. Tuttavia, si tratta anche di malattie prevenibili, per le quali esistono soluzioni in grado di ritardarne l’insorgenza, lo sviluppo di conseguenze più gravi, o consentire a chi ne è affetto di conviverci con una qualità della vita accettabile. Per queste patologie il sistema ospedalocentrico si è rivelato poco efficace ed efficiente. 
+
+Le città più grandi, sopratutto i capoluoghi di provincia, hanno circa 40.000 - 50.000 anziani over 65, con Ancona e Pesaro che ne hanno quasi 100.000. Nei comuni più piccoli il numero assoluto è inferiore ma in molti comuni più di una persona su tre ha più di 65 anni. 
+
+I servizi domiciliari sono efficaci ed efficienti nel rispondere ai bisogni di salute della popolazione anziani, riducendo i costi e migliorando la qualità della vita, ma sono sottodimensionati rispetto al numero di cittadini anziani. 
+
+La spesa annuale del servizio SAD nel 2019 è stata di 6 milioni di euro, di cui 5.6 milioni a carico della regione e 392.346 euro a carico dei cittadini. Il servizio ha raggiunto solo 1.923 cittadini.
+La spesa annuale del servizio ADI nel 2019 è stata di 348.137 euro, interamente a carico della regione e ha raggiunto solo 163 cittadini in soli 3 comuni.
+
+La spesa per le RSA è più alta. Nel 2019 nella regione per i servizi di RSA sono stati spesi 31 milioni, di cui 10 milioni a carico del Sistema Sanitario, 3,4 milioni a carico della regione e 17 milioni a carico dei cittadini.
+
+Secondo alcuni analisti, in Italia il fabbisogno di posti in RSA è molto maggiore dell’offerta, e pertanto sarebbe necessario aumentare le risorse messe a disposizione (Montemurro 2012). Tuttavia, nell’ottica di offrire i servizi migliori, date le scarse risorse a disposizione, è necessario ripensare il ruolo delle RSA, in analogia rispetto a quello dell’ospedale. Ovvero è necessario utilizzare in modo appropriato le risorse disponibili e fornire una gamma completa di servizi nell’ambito del cosiddetto “continuum assistenziale”. 
+
+Per questi motivi la domanda di salute associata alle NCDs si scarica pesantemente sugli ospedali. I ricoveri associati a NCDs corrispondono al 7.06% del totale dei ricoveri e al 8.75% del totale dei costi relativi per un totale di 70 milioni di euro.
+
+Sebbene i ricoveri associati a NCDs tra li anziani aumentino proporzionalmente all'età media della popolazione, ci sono comuni che generano più ricoveri e altri meno. Il report evidenza questi comuni, che possono essere utili casi di studio per capire i determinanti della salute e/o l'efficacia dei servizi territoriali. 
+
+Anche la spesa farmaceutica mostra il peso economico e sociale di queste patologie. Le cifre presentate mostrano una spesa totale per la farmaceutica di 551,37 milioni di euro all’anno, con una quota di spesa associata alle NCDs pari al 18,17% del totale.
+
+---
+
+Con questo ho concluso l'estrapolazione dei findings più importanti. Non iniziare ancora a scrivere il summary. Se mi dici che è tutto chiaro passo a fornirti le indicazioni per il paragrafo successivo
+
+---
+
+Punto 3. Punti di forza della ricerca
+
+- Aver analizzato i dati presi dalle SDO e della spesa farmaceutica, collegandoli ai dati demografici e a quelli sui servizi domiciliare i territoriali, per fornire un quadro completo dei potenziali risparmi associati a programmi efficaci di prevenzione, medicina di prossimità, e continuum assistenziale, soprattuto per la popolazione anziana che rappresenta un più di un quarto della popolazione della regione 
+
+- aver condotto tutte le analisi a livello comunale, permettendo di individuare le località su cui intervenire prioritariamente, ma anche permettendo di svolgere delle analisi comparative che forniscono informazioni specifiche sui determinati della salute e della spesa sanitaria 
+
+Con questo ho concluso la descrizione dei punti di forza del report. Non iniziare ancora a scrivere il summary. Se mi dici che è tutto chiaro passo a fornirti le indicazioni per il paragrafo successivo
+
+
+---
+
+Punto 4. Raccomandazioni di salute pubblica. 
+
+Il report elenca diverse possibili azioni di salute pubblica, molte delle quali nell'ambito della medicina di prossimità. Te le elenco di seguito, ma non devi inserirle tutte nel summary, perchè lo renderebbe troppo esteso. Le devi riassumere. 
+
+---
+
+1.	Telemedicina. La telemedicina rappresenta un’opzione preziosa per le aree di montagna, consentendo ai cittadini di accedere ai servizi sanitari senza la necessità di spostarsi fisicamente. La teleconsultazione, ad esempio, consente ai pazienti di comunicare con i medici tramite videoconferenza, fornendo diagnosi e consulenze a distanza (Martinelli et al. 2020; Ting and Wilkes 2021);
+2.	Centri sanitari mobili. L’utilizzo di centri sanitari mobili può essere una soluzione efficace per raggiungere le comunità di montagna e fornire servizi sanitari di base. Questi centri possono essere attrezzati con personale medico, attrezzature diagnostiche (point-of-care) e farmaci essenziali per fornire cure primarie direttamente alle comunità più remote;
+3.	Collaborazione interdisciplinare. Per favorire una maggiore efficacia nell’organizzazione dei servizi sanitari territoriali è importante promuovere la collaborazione tra diversi professionisti sanitari e organizzazioni. Ad esempio, è possibile coinvolgere medici, infermieri, farmacisti, assistenti sociali e operatori sanitari locali per creare reti di supporto e coordinare le attività sanitarie nell’attività di telemedicina;
+4.	Trasporto sanitario. Garantire un adeguato trasporto sanitario è essenziale per le comunità di montagna. Inoltre, stabilire una rete di trasporto ben coordinata tra i vari livelli di assistenza sanitaria, come ospedali di riferimento e strutture di cure primarie, può facilitare gli spostamenti dei pazienti quando necessario;
+5.	Sensibilizzazione e coinvolgimento comunitario. Coinvolgere attivamente la comunità nell’organizzazione dei servizi sanitari territoriali è fondamentale. Promuovere la sensibilizzazione sulla salute, l’adozione di stili di vita sani e l’accesso ai servizi sanitari può contribuire a migliorare la salute complessiva delle persone che vivono nelle aree di montagna
+
+1.	Promozione di uno stile di vita sano: Un’azione fondamentale è promuovere uno stile di vita sano attraverso programmi di promozione della salute. Questi programmi non devono limitarsi all’educazione sanitaria su una dieta equilibrata, l’importanza dell’attività fisica regolare, il controllo del peso, la riduzione del fumo e il consumo moderato di alcol, ma dovrebbero operare sul contesto dove vivono le persone per favorire il cambiamento dei comportamenti con programmi multi-livello che agiscono su diversi fattori del cambiamento a livello individuale e comunitario.
+2.	Screening e diagnosi precoce: Un’altra strategia importante è implementare programmi di screening e diagnosi precoce per identificare le persone a rischio o affette da queste patologie. Ad esempio, lo screening regolare della pressione sanguigna e dei livelli di glucosio nel sangue può individuare precocemente l’ipertensione e il diabete, consentendo interventi tempestivi.
+3.	Accesso a cure primarie: Garantire un accesso facile ed equo a cure primarie di qualità è cruciale per la gestione delle patologie croniche. I medici di base e gli operatori sanitari devono essere adeguatamente formati per la diagnosi, il trattamento e il monitoraggio delle patologie croniche, fornendo supporto continuo ai pazienti.
+4.	Gestione multidisciplinare: Adottare un approccio multidisciplinare nella gestione delle patologie croniche può migliorare i risultati e ridurre le complicanze. Un team composto da medici, infermieri, nutrizionisti, fisioterapisti, psicologi e altri professionisti può fornire un’assistenza integrata, personalizzata e continua.
+5.	Utilizzo di tecnologie sanitarie: Le tecnologie sanitarie come la telemedicina possono essere utilizzate per il monitoraggio a distanza dei pazienti, il controllo dei sintomi e la gestione delle terapie. Ciò consente un trattamento più tempestivo e riduce la necessità di ricoveri ospedalieri.
+6.	Programmi di gestione del caso: L’implementazione di programmi di gestione del caso può migliorare il coordinamento delle cure e la continuità dell’assistenza. Questi programmi coinvolgono un coordinatore del caso che si occupa della gestione globale delle cure del paziente, assicurando un’adeguata comunicazione tra i vari professionisti coinvolti (si pensi alla figura dell’infermiere di comunità).
+7.	Supporto all’autogestione: Fornire ai pazienti le competenze necessarie per gestire in autonomia la propria malattia può contribuire a prevenire complicanze e ridurre i ricoveri. L’educazione sulle patologie, l’addestramento all’autosomministrazione dei farmaci e il supporto psicologico possono fare la differenza nella gestione quotidiana della malattia.
+8.	Collaborazione tra settori: È importante promuovere la collaborazione tra settori, sanità, assistenza sociale, istruzione e ambiente. Un approccio intersettoriale può affrontare i determinanti sociali e ambientali della salute, creando un ambiente favorevole alla prevenzione e alla gestione delle patologie croniche.
+
+Con questo ho concluso la descrizione delle implicazioni di salute pubblica. Non iniziare ancora a scrivere il summary. Se mi dici che è tutto chiaro passo a fornirti le istruzioni generali
+
+
+Istruzioni generali:
+Scrivi un summary coerente con il report che hai letto
+Tieniti su una lunghezza di circa 1000-2000 parole.
+
+Ora puoi cominciare a scrivere il summary
+

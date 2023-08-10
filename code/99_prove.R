@@ -763,3 +763,10 @@ tm_shape(db_map_res) + # il database con i dati
   tm_layout(legend.show = F) # Reposition the legend
 
 costi_farma
+
+valori_mancanti <- setdiff(comuni_snai$territorio, db_snai_1$territorio)
+print(valori_mancanti)
+
+serra <- db %>% 
+  filter(cod_istat == "041061")
+print(serra$territorio)
